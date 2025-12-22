@@ -1,0 +1,31 @@
+{
+  "name": "@use-raf/loop",
+  "version": "0.0.1",
+  "description": "React frame-synchronized loop hook",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "keywords": [
+    "react",
+    "hook",
+    "requestAnimationFrame",
+    "raf",
+    "animation",
+    "interval"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check --write",
+    "lint:check": "biome check",
+    "format": "biome format --write",
+    "format:check": "biome format"
+  },
+  "peerDependencies": {
+    "react": ">=16.14"
+  },
+  "author": "einouqo",
+  "license": "MIT"
+}

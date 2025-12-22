@@ -1,0 +1,28 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "bun run --filter './packages/*' build",
+    "test": "vitest run",
+    "lint": "biome check --write",
+    "lint:check": "biome check",
+    "format": "biome format --write",
+    "format:check": "biome format"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.8",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@types/react": "^16.14",
+    "jsdom": "^27.3.0",
+    "react": "^16.14",
+    "react-dom": "^16.14",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^4.0.15"
+  },
+  "author": "einouqo",
+  "license": "MIT"
+}
