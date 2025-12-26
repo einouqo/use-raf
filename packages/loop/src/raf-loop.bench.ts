@@ -129,7 +129,7 @@ describe('raf loop hook', () => {
 
 /**
  * HOSTILE ENVIRONMENT POLYFILL
- * Manually mocking requestAnimationFrame bekking the vitest's benchmark runner valid.
+ * Manually mocking requestAnimationFrame making the vitest's benchmark runner valid.
  */
 function setupRafBenchmark() {
   let queue: FrameRequestCallback[] = []

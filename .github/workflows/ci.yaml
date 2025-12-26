@@ -10,13 +10,12 @@ permissions:
 jobs:
   deps:
     uses: ./.github/workflows/deps.yaml
-    secrets: inherit
   linters:
-    needs: [ dependencies ]
+    needs: [ deps ]
     uses: ./.github/workflows/linters.yaml
   tests:
-    needs: [ dependencies ]
+    needs: [ deps ]
     uses: ./.github/workflows/tests.yaml
   bench:
-    needs: [ dependencies, tests ]
+    needs: [ deps, tests ]
     uses: ./.github/workflows/bench.yaml

@@ -1,4 +1,4 @@
-name: use modules
+name: use bun cache
 runs:
   using: "composite"
   steps:
@@ -9,4 +9,5 @@ runs:
         key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
     - name: check cache
       if: steps.bun-cache.outputs.cache-hit != 'true'
-      run: bun i
+      shell: bash
+      run: devenv shell bun i

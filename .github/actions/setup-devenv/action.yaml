@@ -1,11 +1,11 @@
-name: setup environment
+name: setup devenv
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v6
     - uses: cachix/install-nix-action@v31
     - uses: cachix/cachix-action@v16
       with:
         name: devenv
     - name: install devenv
+      shell: bash
       run: nix profile install nixpkgs#devenv

@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks/dom'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { useRafLoop } from './raf-loop.hook'
+import { useRafLoop, fps } from './raf-loop.hook'
 import { useState } from 'react'
 
 const useActiveRafLoop = (...[callback, opts]: Parameters<typeof useRafLoop>) => {
@@ -8,6 +8,19 @@ const useActiveRafLoop = (...[callback, opts]: Parameters<typeof useRafLoop>) =>
   const result = useRafLoop(callback, { ...opts, setActive })
   return { ...result, isActive }
 }
+
+describe('fps helper', () => {
+  it('should convert frames per second to milliseconds', () => {
+    expect(fps(60)).toBeCloseTo(16.667, 2)
+    expect(fps(30)).toBeCloseTo(33.333, 2)
+    expect(fps(15)).toBeCloseTo(66.667, 2)
+    expect(fps(1)).toBe(1000)
+  })
+
+  it('should work with decimal frame rates', () => {
+    expect(fps(59.94)).toBeCloseTo(16.683, 2)
+  })
+})
 
 describe('raf loop hook', () => {
   beforeEach(() => {

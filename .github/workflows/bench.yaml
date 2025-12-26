@@ -3,11 +3,19 @@ on: [ workflow_call ]
 permissions:
   contents: read
 jobs:
-  bench:
+  codespeed:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v6
       - name: setup environment
-        uses: ./.github/actions/setup-env
-      - name: attach dependencies
-        uses: ./.github/actions/use-modules
-      - run: bun run bench
+        uses: ./.github/actions/setup-devenv
+      - name: cache warmup
+        uses: ./.github/actions/use-bun-cache
+      - name: node modules
+        shell: bash
+        run: devenv shell bun i
+      - name: bench
+        uses: CodSpeedHQ/action@v4
+        with:
+          run: devenv shell bun run bench
+          mode: 'simulation'

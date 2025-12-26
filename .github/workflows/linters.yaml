@@ -6,8 +6,14 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v6
       - name: setup environment
-        uses: ./.github/actions/setup-env
-      - name: attach dependencies
-        uses: ./.github/actions/use-modules
-      - run: bun run lint
+        uses: ./.github/actions/setup-devenv
+      - name: cache warmup
+        uses: ./.github/actions/use-bun-cache
+      - name: node modules
+        shell: bash
+        run: devenv shell bun i
+      - name: run lint
+        shell: bash
+        run: devenv shell bun run lint
