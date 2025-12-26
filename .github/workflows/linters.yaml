@@ -1,0 +1,13 @@
+name: linters
+on: [ workflow_call ]
+permissions:
+  contents: read
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup environment
+        uses: ./.github/actions/setup-env
+      - name: attach dependencies
+        uses: ./.github/actions/use-modules
+      - run: bun run lint

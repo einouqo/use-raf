@@ -1,0 +1,12 @@
+name: use modules
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/cache@v5
+      id: bun-cache
+      with:
+        path: ~/.bun/install/cache
+        key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+    - name: check cache
+      if: steps.bun-cache.outputs.cache-hit != 'true'
+      run: bun i

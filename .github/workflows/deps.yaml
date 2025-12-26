@@ -1,0 +1,12 @@
+name: dependencies
+on: [ workflow_call ]
+permissions:
+  contents: read
+jobs:
+  node_modules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup environment
+        uses: ./.github/actions/setup-env
+      - name: cache warmup
+        uses: ./.github/actions/use-modules
