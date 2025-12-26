@@ -1,25 +1,34 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 type Callback = (timestamp: number, delta: number) => void
 
 type Options = {
+  immediate?: boolean
   throttle?: number
+  setActive?: (active: boolean) => void
 }
 
-type Return = [() => void, () => void, boolean]
+type Return = {
+  start: () => void
+  stop: () => void
+}
 
-export const useRafLoop = (callback: Callback, { throttle = 0 }: Options = {}): Return => {
+export const useRafLoop = (
+  callback: Callback,
+  { immediate = true, throttle = 0, setActive }: Options = {},
+): Return => {
   const callbackRef = useRef(callback)
+  const setActiveRef = useRef(setActive)
   useEffect(() => {
     callbackRef.current = callback
-  }, [callback])
+    setActiveRef.current = setActive
+  })
 
   const throttleRef = useRef(throttle)
   useEffect(() => {
     throttleRef.current = throttle
   }, [throttle])
 
-  const [isActive, setIsActive] = useState(false)
   const requestInfoRef = useRef<{
     id: number
     timestamp?: number
@@ -30,7 +39,7 @@ export const useRafLoop = (callback: Callback, { throttle = 0 }: Options = {}): 
       return
     }
 
-    const last = requestInfoRef.current?.timestamp
+    const last = requestInfoRef.current.timestamp
     const delta = timestamp - (last ?? timestamp)
 
     // NOTE: the "edge" term is taken from the mdn throttle documentation
@@ -61,7 +70,7 @@ export const useRafLoop = (callback: Callback, { throttle = 0 }: Options = {}): 
     }
     cancelAnimationFrame(requestInfoRef.current.id)
     requestInfoRef.current = null
-    setIsActive(false)
+    setActiveRef.current?.(false)
   }, [])
 
   const start = useCallback(() => {
@@ -70,10 +79,14 @@ export const useRafLoop = (callback: Callback, { throttle = 0 }: Options = {}): 
     }
     const id = requestAnimationFrame(loop)
     requestInfoRef.current = { id }
-    setIsActive(true)
+    setActiveRef.current?.(true)
   }, [loop])
 
-  useEffect(() => stop, [stop])
+  // biome-ignore lint/correctness/useExhaustiveDependencies: lifecycle effect
+  useEffect(() => {
+    immediate && start()
+    return stop
+  }, [])
 
-  return [start, stop, isActive]
+  return { stop, start }
 }

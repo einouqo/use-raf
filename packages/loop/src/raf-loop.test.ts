@@ -1,8 +1,15 @@
 import { renderHook, act } from '@testing-library/react-hooks/dom'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { useRafLoop } from './raf-loop.hook'
+import { useState } from 'react'
 
-describe('useRafLoop', () => {
+const useActiveRafLoop = (...[callback, opts]: Parameters<typeof useRafLoop>) => {
+  const [isActive, setActive] = useState(false)
+  const result = useRafLoop(callback, { ...opts, setActive })
+  return { ...result, isActive }
+}
+
+describe('raf loop hook', () => {
   beforeEach(() => {
     vi.useFakeTimers()
   })
@@ -11,149 +18,305 @@ describe('useRafLoop', () => {
     vi.useRealTimers()
   })
 
-  it('should not run automatically', () => {
-    const callback = vi.fn()
-    const { result } = renderHook(() => useRafLoop(callback))
-    const [, , isActive] = result.current
+  describe('initialization', () => {
+    it('should not run automatically', () => {
+      const callback = vi.fn()
+      const { result } = renderHook(() => useActiveRafLoop(callback, { immediate: false }))
 
-    expect(isActive).toBe(false)
+      expect(result.current.isActive).toBe(false)
 
-    act(() => {
-      vi.advanceTimersByTime(100)
+      act(() => {
+        vi.advanceTimersByTime(100)
+      })
+
+      expect(callback).not.toHaveBeenCalled()
     })
-
-    expect(callback).not.toHaveBeenCalled()
   })
 
-  it('should loop when started and provide correct delta', () => {
-    const callback = vi.fn()
-    const { result } = renderHook(() => useRafLoop(callback))
+  describe('basic loop control', () => {
+    it('should start loop immediately by default', () => {
+      const callback = vi.fn()
+      const { result } = renderHook(() => useActiveRafLoop(callback))
 
-    act(() => {
-      const [start] = result.current
-      start()
+      expect(result.current.isActive).toBe(true)
+
+      act(() => {
+        vi.advanceTimersByTime(32)
+      })
+
+      expect(callback).toHaveBeenCalled()
+      expect(callback.mock.calls.length).toBeGreaterThanOrEqual(2)
     })
 
-    const [, , isActive] = result.current
-    expect(isActive).toBe(true)
+    it('should provide timestamp and delta to callback', () => {
+      const callback = vi.fn()
+      renderHook(() => useRafLoop(callback))
 
-    act(() => {
-      vi.advanceTimersByTime(16)
-    })
-    act(() => {
-      vi.advanceTimersByTime(16)
+      act(() => {
+        vi.advanceTimersByTime(32)
+      })
+
+      const lastCall = callback.mock.calls.at(-1)
+      expect(lastCall?.[0]).toBeGreaterThan(0)
+      expect(lastCall?.[1]).toBeGreaterThan(0)
     })
 
-    expect(callback).toHaveBeenCalled()
-    expect(callback.mock.calls.length).toBeGreaterThanOrEqual(2)
-    expect(callback.mock.calls.at(-1)?.[1]).toBeGreaterThan(0)
+    it('should stop looping when stop is called', () => {
+      const callback = vi.fn()
+      const { result } = renderHook(() => useActiveRafLoop(callback))
+
+      act(() => {
+        vi.advanceTimersByTime(50)
+      })
+
+      const callCountBeforeStop = callback.mock.calls.length
+
+      act(() => {
+        result.current.stop()
+      })
+
+      expect(result.current.isActive).toBe(false)
+
+      act(() => {
+        vi.advanceTimersByTime(100)
+      })
+
+      expect(callback.mock.calls.length).toBe(callCountBeforeStop)
+    })
   })
 
-  it('should stop looping when stop is called', () => {
-    const callback = vi.fn()
-    const { result } = renderHook(() => useRafLoop(callback))
+  describe('callback updates', () => {
+    it('should use the latest callback without restarting', () => {
+      let value = false
+      const { rerender } = renderHook(({ cb }) => useRafLoop(cb), {
+        initialProps: { cb: () => {} },
+      })
 
-    act(() => {
-      const [start] = result.current
-      start()
-      vi.advanceTimersByTime(100)
+      rerender({
+        cb: () => {
+          value = true
+        },
+      })
+
+      act(() => {
+        vi.advanceTimersByTime(50)
+      })
+
+      expect(value).toBe(true)
     })
-
-    const callCountBeforeStop = callback.mock.calls.length
-
-    act(() => {
-      const [, stop] = result.current
-      stop()
-    })
-
-    const [, , isActive] = result.current
-    expect(isActive).toBe(false)
-
-    act(() => {
-      vi.advanceTimersByTime(100)
-    })
-
-    expect(callback.mock.calls.length).toBe(callCountBeforeStop)
   })
 
-  it('should use the latest callback without restarting', () => {
-    let value = false
-    const { result, rerender } = renderHook(({ cb }) => useRafLoop(cb), {
-      initialProps: { cb: () => {} },
+  describe('throttling', () => {
+    it('should respect throttle option', () => {
+      const callback = vi.fn()
+      renderHook(() => useRafLoop(callback, { throttle: 50 }))
+
+      act(() => {
+        vi.advanceTimersToNextFrame()
+      })
+
+      expect(callback).toHaveBeenCalledTimes(1)
+
+      act(() => {
+        vi.advanceTimersByTime(40)
+        vi.advanceTimersToNextFrame()
+      })
+
+      expect(callback).toHaveBeenCalledTimes(1)
+
+      act(() => {
+        vi.advanceTimersByTime(10)
+        vi.advanceTimersToNextFrame()
+      })
+
+      expect(callback).toHaveBeenCalledTimes(2)
     })
 
-    act(() => {
-      const [start] = result.current
-      start()
+    it('should accumulate delta across throttled frames', () => {
+      const callback = vi.fn()
+      const throttle = 1_000
+      renderHook(() => useRafLoop(callback, { throttle }))
+
+      act(() => {
+        vi.advanceTimersByTime(200)
+        vi.advanceTimersToNextFrame()
+      })
+      act(() => {
+        vi.advanceTimersByTime(200)
+        vi.advanceTimersToNextFrame()
+      })
+      act(() => {
+        vi.advanceTimersByTime(600)
+        vi.advanceTimersToNextFrame()
+      })
+
+      expect(callback).toHaveBeenCalledTimes(2)
+
+      const delta = callback.mock.calls.at(-1)?.[1]
+      expect(delta).toBeGreaterThanOrEqual(throttle)
+      expect(delta / throttle - 1).toBeCloseTo(0, 1)
     })
 
-    rerender({
-      cb: () => {
-        value = true
-      },
+    it('should handle changing throttle dynamically', () => {
+      const callback = vi.fn()
+      const { rerender } = renderHook(({ throttle }) => useRafLoop(callback, { throttle }), {
+        initialProps: { throttle: 100 },
+      })
+
+      act(() => {
+        vi.advanceTimersByTime(150)
+      })
+
+      const callCountAfterFirst = callback.mock.calls.length
+      expect(callCountAfterFirst).toBeGreaterThanOrEqual(2)
+
+      rerender({ throttle: 500 })
+
+      callback.mockClear()
+
+      act(() => {
+        vi.advanceTimersByTime(300)
+      })
+
+      expect(callback).not.toHaveBeenCalled()
+
+      act(() => {
+        vi.advanceTimersByTime(250)
+      })
+
+      expect(callback).toHaveBeenCalled()
     })
 
-    act(() => {
-      vi.advanceTimersByTime(50)
-    })
+    it('should handle changing throttle to 0 (no throttle)', () => {
+      const callback = vi.fn()
+      const { rerender } = renderHook(({ throttle }) => useRafLoop(callback, { throttle }), {
+        initialProps: { throttle: 1000 },
+      })
 
-    expect(value).toBe(true)
+      callback.mockClear()
+
+      rerender({ throttle: 0 })
+
+      act(() => {
+        vi.advanceTimersByTime(50)
+      })
+
+      expect(callback.mock.calls.length).toBeGreaterThan(1)
+    })
   })
 
-  it('should respect throttle option', () => {
-    const callback = vi.fn()
-    const { result } = renderHook(() => useRafLoop(callback, { throttle: 50 }))
+  describe('edge cases', () => {
+    it('should handle calling start() multiple times consecutively', () => {
+      const callback = vi.fn()
+      const { result } = renderHook(() => useActiveRafLoop(callback, { immediate: false }))
 
-    act(() => {
-      const [start] = result.current
-      start()
-      vi.advanceTimersToNextFrame()
+      act(() => {
+        result.current.start()
+        result.current.start()
+        result.current.start()
+      })
+
+      expect(result.current.isActive).toBe(true)
+
+      act(() => {
+        vi.advanceTimersByTime(50)
+      })
+
+      expect(callback.mock.calls.length).toBeGreaterThan(0)
+
+      act(() => {
+        result.current.stop()
+      })
+
+      expect(result.current.isActive).toBe(false)
     })
 
-    expect(callback).toHaveBeenCalledTimes(1)
+    it('should handle calling stop() when already stopped', () => {
+      const callback = vi.fn()
+      const { result } = renderHook(() => useActiveRafLoop(callback, { immediate: false }))
 
-    act(() => {
-      vi.advanceTimersByTime(40)
-      vi.advanceTimersToNextFrame()
+      act(() => {
+        result.current.stop()
+        result.current.stop()
+        result.current.stop()
+      })
+
+      expect(result.current.isActive).toBe(false)
+
+      act(() => {
+        result.current.start()
+      })
+
+      act(() => {
+        vi.advanceTimersByTime(50)
+      })
+
+      expect(callback).toHaveBeenCalled()
+      expect(result.current.isActive).toBe(true)
     })
 
-    expect(callback).toHaveBeenCalledTimes(1)
+    it('should handle calling stop() from within the callback function', () => {
+      let stopFn: (() => void) | null = null
+      let callCount = 0
 
-    act(() => {
-      vi.advanceTimersByTime(10)
-      vi.advanceTimersToNextFrame()
+      const { result } = renderHook(() =>
+        useActiveRafLoop(() => {
+          callCount++
+          if (callCount >= 3) {
+            stopFn?.()
+          }
+        }),
+      )
+
+      stopFn = result.current.stop
+
+      act(() => {
+        vi.advanceTimersByTime(100)
+      })
+
+      expect(result.current.isActive).toBe(false)
+      expect(callCount).toBe(3)
+
+      const callCountAfterStop = callCount
+      act(() => {
+        vi.advanceTimersByTime(100)
+      })
+      expect(callCount).toBe(callCountAfterStop)
     })
 
-    expect(callback).toHaveBeenCalledTimes(2)
-  })
+    it('should handle rapid start/stop cycles', () => {
+      const callback = vi.fn()
+      const { result } = renderHook(() => useRafLoop(callback, { immediate: false }))
 
-  it('should accumulate delta across throttled frames', () => {
-    const callback = vi.fn()
-    const throttle = 1_000
-    const { result } = renderHook(() => useRafLoop(callback, { throttle }))
+      // Rapidly start and stop multiple times
+      for (let i = 0; i < 5; i++) {
+        act(() => {
+          result.current.start()
+        })
 
-    act(() => {
-      const [start] = result.current
-      start()
+        act(() => {
+          vi.advanceTimersByTime(10)
+        })
+
+        act(() => {
+          result.current.stop()
+        })
+      }
+
+      const callCountAfterCycles = callback.mock.calls.length
+
+      // Start one final time to verify it still works
+      act(() => {
+        result.current.start()
+      })
+
+      expect(callback.mock.calls.length).toBe(callCountAfterCycles)
+
+      act(() => {
+        vi.advanceTimersByTime(50)
+      })
+
+      expect(callback.mock.calls.length).toBeGreaterThan(callCountAfterCycles)
     })
-
-    act(() => {
-      vi.advanceTimersByTime(200)
-      vi.advanceTimersToNextFrame()
-    })
-    act(() => {
-      vi.advanceTimersByTime(200)
-      vi.advanceTimersToNextFrame()
-    })
-    act(() => {
-      vi.advanceTimersByTime(600)
-      vi.advanceTimersToNextFrame()
-    })
-
-    expect(callback).toHaveBeenCalledTimes(2)
-
-    const delta = callback.mock.calls.at(-1)?.[1]
-    expect(delta).toBeGreaterThanOrEqual(throttle)
-    expect(delta / throttle - 1).toBeCloseTo(0, 1)
   })
 })
