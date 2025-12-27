@@ -1,10 +1,11 @@
 name: benchmarks
 on: [ workflow_call ]
-permissions:
-  contents: read
 jobs:
   codespeed:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v6
       - name: setup environment
@@ -17,5 +18,5 @@ jobs:
       - name: bench
         uses: CodSpeedHQ/action@v4
         with:
+          mode: simulation
           run: devenv shell bun run bench
-          mode: 'simulation'
