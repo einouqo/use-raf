@@ -15,10 +15,8 @@ jobs:
       - name: node modules
         shell: bash
         run: devenv shell bun i
-      - name: Bench (Debug Mode)
-        run: devenv shell node --run bench
       - name: bench
         uses: CodSpeedHQ/action@v4
         with:
           mode: simulation
-          run: devenv shell node ./node_modules/vitest/vitest.mjs bench --run
+          run: devenv shell bun run bench
