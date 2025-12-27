@@ -6,14 +6,14 @@ on:
   pull_request:
     branches: [ release/*, main ]
 jobs:
-  deps:
-    uses: ./.github/workflows/deps.yaml
+  cache-warmup:
+    uses: ./.github/workflows/cache-warmup.yaml
   linters:
-    needs: [ deps ]
+    needs: [ cache-warmup ]
     uses: ./.github/workflows/linters.yaml
   tests:
-    needs: [ deps ]
+    needs: [ cache-warmup ]
     uses: ./.github/workflows/tests.yaml
   bench:
-    needs: [ deps, tests ]
+    needs: [ cache-warmup, tests ]
     uses: ./.github/workflows/bench.yaml

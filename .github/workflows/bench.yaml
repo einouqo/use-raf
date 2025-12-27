@@ -1,7 +1,7 @@
 name: benchmarks
-on: [ workflow_call ]
+on: [ workflow_call, workflow_dispatch ]
 jobs:
-  codespeed:
+  codspeed:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -15,8 +15,10 @@ jobs:
       - name: node modules
         shell: bash
         run: devenv shell bun i
+      - name: Bench (Debug Mode)
+        run: devenv shell node --run bench
       - name: bench
         uses: CodSpeedHQ/action@v4
         with:
           mode: simulation
-          run: devenv shell bun run bench
+          run: devenv shell node ./node_modules/vitest/vitest.mjs bench --run

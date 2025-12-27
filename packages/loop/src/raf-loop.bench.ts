@@ -1,9 +1,10 @@
 import { renderHook, act } from '@testing-library/react-hooks/dom'
 import ReactUse from 'react-use'
 import * as ShinedUse from '@shined/react-use'
-import { vi, describe, bench } from 'vitest'
+import { describe, bench } from 'vitest'
 import { useRafLoop as useLoop } from './raf-loop.hook'
 import { useCallback, useRef } from 'react'
+import { setupRafBenchmark } from './raf-loop.bench.utils'
 
 const flush = setupRafBenchmark()
 
@@ -126,40 +127,3 @@ describe('raf loop hook', () => {
     })
   })
 })
-
-/**
- * HOSTILE ENVIRONMENT POLYFILL
- * Manually mocking requestAnimationFrame making the vitest's benchmark runner valid.
- */
-function setupRafBenchmark() {
-  let queue: FrameRequestCallback[] = []
-
-  if (typeof window !== 'undefined') {
-    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
-      queue.push(cb)
-      return 1
-    })
-    vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {})
-  }
-
-  return (frames: number) => {
-    // REMOVED: queue = []
-    // Do not clear the queue here; we need to process what was scheduled by start()!
-
-    for (let i = 0; i < frames; i++) {
-      if (queue.length === 0) {
-        break
-      }
-
-      // Take current callbacks out of queue
-      const current = queue
-      // clear queue for the NEXT frame (this part is correct)
-      queue = []
-
-      const now = performance.now()
-      current.forEach((cb) => {
-        cb(now)
-      })
-    }
-  }
-}
