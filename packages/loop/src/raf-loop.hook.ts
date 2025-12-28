@@ -23,7 +23,7 @@ type Callback = (timestamp: number, delta: number) => void
  * useRafLoop(callback, { throttle: fps(15) })
  * ```
  */
-export const fps = (frames: number) => 1000 / frames
+export const fps = (frames: number) => 1_000 /* 1 second */ / frames
 
 type Options = {
   /**

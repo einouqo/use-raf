@@ -8,6 +8,7 @@
     "build": "bun run --filter './packages/*' build",
     "test": "vitest run",
     "bench": "vitest bench --run",
+    "bench:regression": "vitest bench --run -t @regression",
     "lint": "biome check --write",
     "lint:check": "biome check",
     "format": "biome format --write",
