@@ -1,1 +1,1 @@
-export { useRafLoop } from './raf-loop.hook'
+export { useRafLoop, fps } from './raf-loop.hook'

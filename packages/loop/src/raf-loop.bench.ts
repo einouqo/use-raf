@@ -48,7 +48,7 @@ describe('raf loop hook', () => {
     const scenario = (ctrl: HookControl, frames: number) => {
       vi.useFakeTimers()
       ctrl.start()
-      vi.advanceTimersByTime(frames * 8) // 8ms between frames is about 120fps
+      vi.advanceTimersByTime(frames * 16)
       ctrl.stop()
       vi.useRealTimers()
     }
@@ -81,7 +81,7 @@ describe('raf loop hook', () => {
           )
 
           bench(
-            `@use-raf/loop #regress throughput ${limit} throttle`,
+            `@use-raf/loop #regress throughput ${limit}fps throttle`,
             () => scenario(raf.result.current, FRAMES),
             options,
           )
