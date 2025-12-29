@@ -18,9 +18,6 @@ type Callback = (timestamp: number, delta: number) => void
  * ```tsx
  * // Run at 30 FPS
  * useRafLoop(callback, { throttle: fps(30) })
- *
- * // Run at 15 FPS
- * useRafLoop(callback, { throttle: fps(15) })
  * ```
  */
 export const fps = (frames: number) => 1_000 /* 1 second */ / frames

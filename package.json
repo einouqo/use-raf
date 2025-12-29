@@ -7,8 +7,8 @@
   "scripts": {
     "build": "bun run --filter './packages/*' build",
     "test": "vitest run",
-    "bench": "vitest bench --run",
-    "bench:regression": "vitest bench --run -t @regression",
+    "bench": "vitest bench --run --no-file-parallelism --sequence.shuffle",
+    "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism",
     "lint": "biome check --write",
     "lint:check": "biome check",
     "format": "biome format --write",
