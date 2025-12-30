@@ -1,6 +1,6 @@
 # @use-raf/loop
 
-A React hook for creating controlled `requestAnimationFrame` loops.
+A React hook for creating controlled, frame-rate customizable `requestAnimationFrame` loops.
 
 ## Installation
 
@@ -71,7 +71,7 @@ Converts FPS to milliseconds per frame for the `throttle` option.
 
 ## Performance
 
-Benchmarked against `react-use` and `@shined/react-use`. While having heavier (~10-15%) mount cost, all hooks show about the same performance without throttling. When throttling is enabled, this implementation uses a combination of `setTimeout` and `requestAnimationFrame` to maintain the target frame rate. Note that `react-use` does not support throttling and was excluded from throttling benchmarks.
+Benchmarked against `react-use` and `@shined/react-use`. While having heavier (~10-15%) mount cost, all hooks show about the same performance without throttling. When throttling is enabled, `@use-raf/loop` uses a combination of `setTimeout` and `requestAnimationFrame` to maintain the target frame rate, showing better performance over `@shined/react-use` with relatively high throttling. Note that `react-use` does not support throttling and was excluded from throttling benchmarks.
 
 ### Benchmark Results
 
