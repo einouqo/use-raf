@@ -177,27 +177,37 @@ describe('raf loop hook', () => {
       })
 
       act(() => {
-        vi.advanceTimersByTime(150)
+        vi.advanceTimersByTime(200)
+        vi.advanceTimersToNextFrame()
       })
 
-      const callCountAfterFirst = callback.mock.calls.length
-      expect(callCountAfterFirst).toBeGreaterThanOrEqual(2)
+      expect(callback.mock.calls.length).toBeGreaterThanOrEqual(2)
 
       rerender({ throttle: 500 })
+
+      act(() => {
+        vi.advanceTimersByTime(100)
+        vi.advanceTimersToNextFrame()
+      })
+
+      // the last call scheduled by 100ms throttling
+      expect(callback.mock.calls.length).toBeGreaterThanOrEqual(1)
 
       callback.mockClear()
 
       act(() => {
-        vi.advanceTimersByTime(300)
+        vi.advanceTimersByTime(200)
+        vi.advanceTimersToNextFrame()
       })
 
       expect(callback).not.toHaveBeenCalled()
 
       act(() => {
-        vi.advanceTimersByTime(250)
+        vi.advanceTimersByTime(300)
+        vi.advanceTimersToNextFrame()
       })
 
-      expect(callback).toHaveBeenCalled()
+      expect(callback.mock.calls.length).toBeGreaterThanOrEqual(1)
     })
 
     it('should handle changing throttle to 0 (no throttle)', () => {

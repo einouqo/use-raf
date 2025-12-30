@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef } from 'react'
  * @param timestamp - The current time in milliseconds from `performance.now()`
  * @param delta - Time elapsed in milliseconds since the last callback invocation
  */
-type Callback = (timestamp: number, delta: number) => void
+export type RafLoopCallback = (timestamp: number, delta: number) => void
 
 /**
  * Converts frames per second to milliseconds per frame for use with throttle option.
@@ -22,7 +22,7 @@ type Callback = (timestamp: number, delta: number) => void
  */
 export const fps = (frames: number) => 1_000 /* 1 second */ / frames
 
-type Options = {
+export type RafLoopOptions = {
   /**
    * Whether to start the loop immediately on mount.
    * @default true
@@ -41,7 +41,7 @@ type Options = {
   setActive?: (active: boolean) => void
 }
 
-type Return = {
+export interface RafLoopReturn {
   /**
    * Starts the animation frame loop.
    * Safe to call multiple times - will not create duplicate loops.
@@ -53,6 +53,11 @@ type Return = {
    */
   stop: () => void
 }
+
+type LoopCallback = (timestamp: number) => void
+
+const avg = (first: number, ...rest: number[]) =>
+  (first + rest.reduce((sum, num) => sum + num, 0)) / (rest.length + 1)
 
 /**
  * A React hook for creating a controlled `requestAnimationFrame` loop.
@@ -93,9 +98,9 @@ type Return = {
  * ```
  */
 export const useRafLoop = (
-  callback: Callback,
-  { immediate = true, throttle = 0, setActive }: Options = {},
-): Return => {
+  callback: RafLoopCallback,
+  { immediate = true, throttle = 0, setActive }: RafLoopOptions = {},
+): RafLoopReturn => {
   const callbackRef = useRef(callback)
   const setActiveRef = useRef(setActive)
   useEffect(() => {
@@ -108,57 +113,77 @@ export const useRafLoop = (
     throttleRef.current = throttle
   }, [throttle])
 
-  const requestInfoRef = useRef<{
+  const frameRef = useRef<{
     id: number
-    timestamp?: number
+    type: 'raf' | 'timeout'
   } | null>(null)
+  const frameTimeRef = useRef<{
+    timestamp?: number
+    duration?: number
+  }>({})
 
-  const loop = useCallback((timestamp: number) => {
-    if (requestInfoRef.current === null) {
+  const request = useCallback((loop: LoopCallback) => {
+    if (frameRef.current === null) {
       return
     }
-
-    const last = requestInfoRef.current.timestamp
-    const delta = timestamp - (last ?? timestamp)
-
-    // NOTE: the "edge" term is taken from the mdn throttle documentation
-    // "The first call ... is known as the leading edge."
-    // "After n milliseconds have elapsed from the first call ..., we have reached the trailing edge." (here n ms is a throttle duration)
-    // We fire when we cross that edge (start of a new throttle window).
-    // Ref: https://developer.mozilla.org/en-US/docs/Glossary/Throttle
-    const isBeyondEdge = !last || delta >= throttleRef.current
-    if (!isBeyondEdge) {
-      requestInfoRef.current.id = requestAnimationFrame(loop)
-      return
-    }
-
-    callbackRef.current(timestamp, delta)
-
-    // NOTE: post-flight check in case the stop function has been called in the callback
-    if (requestInfoRef.current === null) {
-      return
-    }
-
-    requestInfoRef.current.timestamp = timestamp
-    requestInfoRef.current.id = requestAnimationFrame(loop)
+    frameRef.current.id = requestAnimationFrame(loop)
+    frameRef.current.type = 'raf'
   }, [])
 
+  const delay = useCallback(
+    (loop: LoopCallback, duration: number) => {
+      if (frameRef.current === null) {
+        return
+      }
+      frameRef.current.id = setTimeout(() => request(loop), duration)
+      frameRef.current.type = 'timeout'
+    },
+    [request],
+  )
+
+  const loop = useCallback<LoopCallback>(
+    (timestamp) => {
+      if (frameRef.current === null) {
+        return
+      }
+
+      const last = frameTimeRef.current.timestamp
+      const delta = timestamp - (last ?? timestamp)
+      callbackRef.current(timestamp, delta)
+
+      const duration = frameTimeRef.current.duration ?? delta
+      frameTimeRef.current.duration = avg(duration, duration, delta)
+      frameTimeRef.current.timestamp = timestamp
+
+      throttleRef.current > frameTimeRef.current.duration
+        ? delay(loop, throttleRef.current)
+        : request(loop)
+    },
+    [delay, request],
+  )
+
   const stop = useCallback(() => {
-    if (requestInfoRef.current === null) {
+    if (frameRef.current === null) {
       return
     }
-    cancelAnimationFrame(requestInfoRef.current.id)
-    requestInfoRef.current = null
+    frameRef.current.type === 'raf'
+      ? cancelAnimationFrame(frameRef.current.id)
+      : clearTimeout(frameRef.current.id)
+    frameRef.current = null
     setActiveRef.current?.(false)
   }, [])
 
   const start = useCallback(() => {
-    if (requestInfoRef.current !== null) {
+    if (frameRef.current !== null) {
       return
     }
+
     const id = requestAnimationFrame(loop)
-    requestInfoRef.current = { id }
+    frameRef.current = { id, type: 'raf' }
     setActiveRef.current?.(true)
+
+    frameTimeRef.current.timestamp = undefined
+    frameTimeRef.current.duration = undefined
   }, [loop])
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: lifecycle effect
