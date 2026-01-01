@@ -1,0 +1,69 @@
+name: '@use-raf/loop'
+on: [ workflow_call ]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - name: setup environment
+        uses: ./.github/actions/setup-devenv
+      - name: use bun cache
+        uses: ./.github/actions/use-bun-cache
+      - name: run lint
+        shell: devenv shell bash -- -e {0}
+        run: |
+          bun i
+          bun run --filter @use-raf/loop lint
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - name: setup environment
+        uses: ./.github/actions/setup-devenv
+      - name: use bun cache
+        uses: ./.github/actions/use-bun-cache
+      - name: run test
+        shell: devenv shell bash -- -e {0}
+        run: |
+          bun i
+          bun run --filter @use-raf/loop test
+  bench:
+    runs-on: ubuntu-latest
+    needs: [ test ]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - name: setup environment
+        uses: ./.github/actions/setup-devenv
+      - name: use bun cache
+        uses: ./.github/actions/use-bun-cache
+      - name: run bench
+        shell: devenv shell bash -- -e {0}
+        run: |
+          bun i
+          bun run --filter @use-raf/loop bench
+  codspeed:
+    runs-on: ubuntu-latest
+    needs: [ test ]
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: setup environment
+        uses: ./.github/actions/setup-devenv
+      - name: use bun cache
+        uses: ./.github/actions/use-bun-cache
+      - name: node modules
+        shell: bash
+        run: devenv shell bun i
+      - name: bench
+        uses: CodSpeedHQ/action@v4
+        with:
+          mode: simulation
+          run: devenv shell bun run --filter @use-raf/loop bench:regress

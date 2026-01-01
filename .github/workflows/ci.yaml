@@ -1,19 +1,22 @@
 name: CI
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
   pull_request:
-    branches: [ release/*, main ]
+    branches: [ main ]
 jobs:
   cache-warmup:
     uses: ./.github/workflows/cache-warmup.yaml
-  linters:
-    needs: [ cache-warmup ]
-    uses: ./.github/workflows/linters.yaml
-  tests:
-    needs: [ cache-warmup ]
-    uses: ./.github/workflows/tests.yaml
-  bench:
-    needs: [ cache-warmup, tests ]
-    uses: ./.github/workflows/bench.yaml
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      loop: ${{ steps.changes.outputs.loop }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            loop: 'packages/loop/**'
+  loop:
+    needs: [ cache-warmup, changes ]
+    if: needs.changes.outputs.loop == 'true'
+    uses: ./.github/workflows/loop.yaml

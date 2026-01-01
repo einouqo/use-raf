@@ -26,14 +26,13 @@
   ],
   "scripts": {
     "build": "tsup",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
     "test": "vitest run",
     "test:watch": "vitest",
     "bench": "vitest bench --run --no-file-parallelism --sequence.shuffle",
     "bench:watch": "vitest bench --no-file-parallelism --sequence.shuffle",
-    "lint": "biome check --write",
-    "lint:check": "biome check",
-    "format": "biome format --write",
-    "format:check": "biome format"
+    "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism"
   },
   "peerDependencies": {
     "react": ">=16.14"
