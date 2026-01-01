@@ -14,10 +14,6 @@
     "bench": {
       "dependsOn": ["test"],
       "cache": false
-    },
-    "bench:regress": {
-      "dependsOn": ["test"],
-      "cache": false
     }
   }
 }

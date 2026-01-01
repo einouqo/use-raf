@@ -1,0 +1,44 @@
+name: CD
+on:
+  push:
+    branches:
+      - main
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: setup environment
+        uses: ./.github/actions/setup-devenv
+      - name: use bun cache
+        uses: ./.github/actions/use-bun-cache
+      - name: run verify
+        shell: devenv shell bash -- -e {0}
+        run: |
+          bun i
+          bun run verify
+  regress:
+    runs-on: ubuntu-latest
+    needs: [ verify ]
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: setup environment
+        uses: ./.github/actions/setup-devenv
+      - name: use bun cache
+        uses: ./.github/actions/use-bun-cache
+      - name: node modules
+        shell: bash
+        run: devenv shell bun i
+      - name: bench
+        uses: CodSpeedHQ/action@v4
+        with:
+          mode: simulation
+          run: devenv shell bun run bench:regress
+  # TODO: npm publishing stub
+  # publish:
+  #   runs-on: ubuntu-latest
+  #   needs: [ verify, regress ]
+  #   environment: production

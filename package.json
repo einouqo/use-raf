@@ -10,7 +10,8 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "bench": "turbo run bench",
-    "bench:regress": "turbo run bench:regress"
+    "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism",
+    "verify": "bunx turbo run lint test --only --log-order grouped"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.8",
