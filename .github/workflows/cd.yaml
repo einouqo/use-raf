@@ -19,7 +19,7 @@ jobs:
         run: |
           bun i
           bun run verify
-  coverage:
+  tests:
     runs-on: ubuntu-latest
     needs: [ verify ]
     permissions:
@@ -35,6 +35,14 @@ jobs:
         run: |
           bun i
           bun run test:coverage
+      - name: upload coverage
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: upload test results
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
   regress:
     runs-on: ubuntu-latest
     needs: [ verify ]
