@@ -1,0 +1,13 @@
+name: cache warmup
+on: [ workflow_call ]
+permissions:
+  contents: read
+jobs:
+  bun:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: setup environment
+        uses: ./.github/actions/setup-devenv
+      - name: bun cache warmup
+        uses: ./.github/actions/use-bun-cache

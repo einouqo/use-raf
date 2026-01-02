@@ -1,0 +1,50 @@
+{
+  "name": "@use-raf/loop",
+  "version": "0.0.1",
+  "description": "React frame-synchronized loop hook",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "keywords": [
+    "react",
+    "hook",
+    "requestAnimationFrame",
+    "raf",
+    "animation",
+    "interval"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "bench": "vitest bench --run --no-file-parallelism --sequence.shuffle",
+    "bench:watch": "vitest bench --no-file-parallelism --sequence.shuffle",
+    "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism"
+  },
+  "peerDependencies": {
+    "react": ">=16.14"
+  },
+  "devDependencies": {
+    "@shined/react-use": "^1.13.1",
+    "react-use": "^17.6.0"
+  },
+  "author": "einouqo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/einouqo/use-raf"
+  },
+  "license": "MIT"
+}
