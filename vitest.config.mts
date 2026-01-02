@@ -1,5 +1,5 @@
 import codspeedPlugin from '@codspeed/vitest-plugin'
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [ codspeedPlugin() ],
@@ -7,6 +7,12 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     reporters: [ 'default' ],
-    coverage: { provider: 'v8' },
+    coverage: {
+      provider: 'v8',
+      exclude: [
+        ...(configDefaults.coverage.exclude || []),
+        "**/*.config.*",
+      ]
+    },
   },
 })
