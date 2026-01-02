@@ -6,6 +6,8 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6
       - name: setup environment
@@ -17,6 +19,22 @@ jobs:
         run: |
           bun i
           bun run verify
+  coverage:
+    runs-on: ubuntu-latest
+    needs: [ verify ]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - name: setup environment
+        uses: ./.github/actions/setup-devenv
+      - name: use bun cache
+        uses: ./.github/actions/use-bun-cache
+      - name: run tests
+        shell: devenv shell bash -- -e {0}
+        run: |
+          bun i
+          bun run test:coverage
   regress:
     runs-on: ubuntu-latest
     needs: [ verify ]
@@ -40,5 +58,5 @@ jobs:
   # TODO: npm publishing stub
   # publish:
   #   runs-on: ubuntu-latest
-  #   needs: [ verify, regress ]
+  #   needs: [ verify, regress, coverage ]
   #   environment: production

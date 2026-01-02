@@ -12,8 +12,12 @@ devenv.local.yaml
 # dependencies
 node_modules/
 
+# turborepo
+.turbo/
+
+# tests
+coverage/
+
 # build
 dist/
 
-# turborepo
-.turbo
