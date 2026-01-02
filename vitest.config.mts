@@ -6,9 +6,8 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    coverage: {
-      provider: 'v8',
-      reporter: [ 'text', 'json-summary', 'json' ],
-    },
+    reporters: ['default', 'junit'],
+    outputFile: './test-report.junit.xml',
+    coverage: { provider: 'v8' },
   },
 })

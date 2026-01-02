@@ -17,6 +17,7 @@ node_modules/
 
 # tests
 coverage/
+test-report.junit.xml
 
 # build
 dist/
