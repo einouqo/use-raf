@@ -44,8 +44,7 @@
     "lint:fix": "biome check --write"
   },
   "peerDependencies": {
-    "react": ">=16.14",
-    "@use-raf/loop": "workspace:*"
+    "react": ">=16.14"
   },
   "dependencies": {
     "@use-raf/loop": "workspace:*"

@@ -40,7 +40,6 @@
         "@use-raf/loop": "workspace:*",
       },
       "peerDependencies": {
-        "@use-raf/loop": "workspace:*",
         "react": ">=16.14",
       },
     },
