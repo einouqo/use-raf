@@ -14,6 +14,12 @@ describe('raf timer hook', () => {
     expect(result.current.elapsed).toBe(0)
   })
 
+  it('should start immediate timer on mount', () => {
+    const { result } = renderHook(() => useRafTimer({ duration: 1_000, immediate: true }))
+
+    expect(result.current.isActive).toBe(true)
+  })
+
   it('should start ticking when start is called', () => {
     const { result } = renderHook(() => useRafTimer({ duration: 1_000 }))
 
@@ -104,7 +110,8 @@ describe('raf timer hook', () => {
   })
 
   it('should stop updates permanently when sink is called', () => {
-    const { result } = renderHook(() => useRafTimer({ duration: 1_000 }))
+    const onComplete = vi.fn()
+    const { result } = renderHook(() => useRafTimer({ duration: 1_000, onComplete }))
 
     act(() => {
       result.current.start()
@@ -112,6 +119,9 @@ describe('raf timer hook', () => {
     act(() => {
       vi.advanceTimersByTime(100)
     })
+
+    expect(onComplete).not.toBeCalled()
+
     act(() => {
       result.current.sink()
     })
@@ -122,8 +132,37 @@ describe('raf timer hook', () => {
       vi.advanceTimersByTime(500)
     })
 
-    // Should not have moved
     expect(result.current.elapsed).toBe(snapshot)
+    expect(onComplete).toBeCalledTimes(1)
+  })
+
+  it('should reset timer when reset is called', () => {
+    const onUpdate = vi.fn()
+    const onComplete = vi.fn()
+    const { result } = renderHook(() => useRafTimer({ duration: 1_000, onComplete, onUpdate }))
+
+    act(() => {
+      result.current.start()
+    })
+    act(() => {
+      vi.advanceTimersByTime(500)
+    })
+
+    expect(onUpdate).toBeCalled()
+    expect(onComplete).not.toBeCalled()
+
+    const updated = onUpdate.mock.calls.length
+
+    act(() => {
+      result.current.reset()
+    })
+    act(() => {
+      vi.advanceTimersByTime(500)
+    })
+
+    expect(result.current.isActive).toBeFalsy()
+    expect(onUpdate).toBeCalledTimes(updated + 1) // no updates over the reset one
+    expect(onComplete).not.toBeCalled()
   })
 
   afterEach(() => {

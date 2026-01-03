@@ -87,7 +87,3 @@ Benchmarked against `react-use` and `@shined/react-use`. While having heavier (~
 *Higher hz values indicate better performance. Bold values represent the best result for each test.*
 
 **Hardware:** Apple M2 Max (12 cores @ 3.50 GHz), 32 GB RAM
-
-## License
-
-MIT

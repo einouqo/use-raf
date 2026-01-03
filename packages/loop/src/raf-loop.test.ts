@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks/dom'
+import { renderHook, act } from '@testing-library/react-hooks'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { useRafLoop, fps } from './raf-loop.hook'
 import { useState } from 'react'
