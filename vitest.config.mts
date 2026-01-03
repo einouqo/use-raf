@@ -1,6 +1,8 @@
 import codspeedPlugin from '@codspeed/vitest-plugin'
 import { configDefaults, defineConfig } from 'vitest/config'
 
+const defaultCoverageExclude = configDefaults.coverage.exclude || []
+
 export default defineConfig({
   plugins: [ codspeedPlugin() ],
   test: {
@@ -10,7 +12,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       exclude: [
-        ...(configDefaults.coverage.exclude || []),
+        ...defaultCoverageExclude,
         "**/*.config.*",
       ]
     },

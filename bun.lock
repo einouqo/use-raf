@@ -36,11 +36,10 @@
     "packages/timer": {
       "name": "@use-raf/timer",
       "version": "0.0.1",
-      "devDependencies": {
+      "dependencies": {
         "@use-raf/loop": "workspace:*",
       },
       "peerDependencies": {
-        "@use-raf/loop": "workspace:*",
         "react": ">=16.14",
       },
     },

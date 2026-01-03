@@ -1,7 +1,7 @@
 {
-  "name": "@use-raf/loop",
+  "name": "@use-raf/timer",
   "version": "0.0.1",
-  "description": "React frame-synchronized loop hook",
+  "description": "React frame-synchronized timer hook",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -19,7 +19,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "sideEffects": false,
   "keywords": [
@@ -28,24 +29,25 @@
     "requestAnimationFrame",
     "raf",
     "animation",
-    "interval"
+    "interval",
+    "timer",
+    "schedule",
+    "setTimer",
+    "progress",
+    "countdown"
   ],
   "scripts": {
     "build": "tsup",
-    "lint": "biome check",
-    "lint:fix": "biome check --write",
     "test": "vitest run",
     "test:watch": "vitest",
-    "bench": "vitest bench --run --no-file-parallelism --sequence.shuffle",
-    "bench:watch": "vitest bench --no-file-parallelism --sequence.shuffle",
-    "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism"
+    "lint": "biome check",
+    "lint:fix": "biome check --write"
   },
   "peerDependencies": {
     "react": ">=16.14"
   },
-  "devDependencies": {
-    "@shined/react-use": "^1.13.1",
-    "react-use": "^17.6.0"
+  "dependencies": {
+    "@use-raf/loop": "workspace:*"
   },
   "author": "einouqo",
   "repository": {
