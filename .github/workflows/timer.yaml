@@ -1,0 +1,33 @@
+name: '@use-raf/timer'
+on: [ workflow_call ]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - name: setup environment
+        uses: ./.github/actions/setup-devenv
+      - name: use bun cache
+        uses: ./.github/actions/use-bun-cache
+      - name: run lint
+        shell: devenv shell bash -- -e {0}
+        run: |
+          bun i
+          bun run --filter @use-raf/timer lint
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - name: setup environment
+        uses: ./.github/actions/setup-devenv
+      - name: use bun cache
+        uses: ./.github/actions/use-bun-cache
+      - name: run test
+        shell: devenv shell bash -- -e {0}
+        run: |
+          bun i
+          bun run --filter @use-raf/timer test

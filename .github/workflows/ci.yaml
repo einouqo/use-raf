@@ -9,13 +9,19 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       loop: ${{ steps.changes.outputs.loop }}
+      timer: ${{ steps.changes.outputs.timer }}
     steps:
       - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
             loop: 'packages/loop/**'
+            timer: 'packages/timer/**'
   loop:
     needs: [ cache-warmup, changes ]
     if: needs.changes.outputs.loop == 'true'
     uses: ./.github/workflows/loop.yaml
+  timer:
+    needs: [ cache-warmup, changes ]
+    if: needs.changes.outputs.timer == 'true'
+    uses: ./.github/workflows/timer.yaml
