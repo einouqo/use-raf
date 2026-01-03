@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react-hooks/dom'
 import { describe, expect, it } from 'vitest'
 import { useProgress } from './progress.hook'
 

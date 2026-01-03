@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks'
+import { act, renderHook } from '@testing-library/react-hooks/dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useRafTimer } from './raf-timer.hook'
 
