@@ -12,7 +12,6 @@ npm install @use-raf/timer @use-raf/loop
 
 ```tsx
 import { useRafTimer } from '@use-raf/timer'
-import { useState } from 'react'
 
 const Demo = () => {
   const { isActive, elapsed, start, stop, reset } = useRafTimer({
