@@ -5,7 +5,7 @@ A React hook for creating frame-synchronized timers using `requestAnimationFrame
 ## Installation
 
 ```bash
-npm install @use-raf/timer @use-raf/loop
+npm install @use-raf/timer
 ```
 
 ## Usage
