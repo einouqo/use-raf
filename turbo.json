@@ -10,10 +10,6 @@
     },
     "test": {
       "dependsOn": []
-    },
-    "bench": {
-      "dependsOn": ["test"],
-      "cache": false
     }
   }
 }

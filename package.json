@@ -10,7 +10,6 @@
     "build": "turbo run build --log-order grouped",
     "lint": "turbo run lint --log-order grouped",
     "test": "turbo run test --log-order grouped",
-    "bench": "turbo run bench --log-order grouped",
     "verify": "bunx turbo run lint test --log-order grouped",
     "ci:codecov:test": "vitest run --coverage --reporter junit --outputFile './test-report.junit.xml'",
     "ci:codspeed:regress": "vitest bench --run -t '#regress' --no-file-parallelism"

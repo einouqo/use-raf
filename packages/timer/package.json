@@ -1,0 +1,53 @@
+{
+  "name": "@use-raf/timer",
+  "version": "0.0.1",
+  "description": "React frame-synchronized timer hook",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "keywords": [
+    "react",
+    "hook",
+    "requestAnimationFrame",
+    "raf",
+    "animation",
+    "interval",
+    "timer",
+    "schedule",
+    "setTimer",
+    "progress",
+    "countdown"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check",
+    "lint:fix": "biome check --write"
+  },
+  "peerDependencies": {
+    "react": ">=16.14",
+    "@use-raf/loop": "workspace:*"
+  },
+  "devDependencies": {
+    "@use-raf/loop": "workspace:*"
+  },
+  "author": "einouqo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/einouqo/use-raf"
+  },
+  "license": "MIT"
+}
