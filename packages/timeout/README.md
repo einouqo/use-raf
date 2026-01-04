@@ -33,38 +33,35 @@ cancel()
 
 ### `useFrameTimeout`
 
-A React hook wrapper for `setFrameTimeout` that automatically handles cleanup and supports dependency tracking.
+A React hook that returns a memoized schedule function.
 
 ```tsx
-import { useState } from 'react'
-import { useFrameTimeout } from '@use-raf/timeout'
+const Toast = ({ message }) => {
+  const [visible, setVisible] = useState(true)
+  const cancelRef = useRef<Cancel>()
+  const hide = useFrameTimeout(() => setVisible(false), 3000)
 
-const Demo = () => {
-  const [count, setCount] = useState(0)
+  useEffect(() => {
+    cancelRef.current = hide()
+  }, [hide])
 
-  useFrameTimeout((timestamp) => {
-    setCount(c => c + 1)
-  }, 2000)
+  const handleMouseEnter = () => {
+    cancelRef.current?.()
+  }
 
-  return <p>Count: {count}</p>
-}
-```
+  const handleMouseLeave = () => {
+    cancelRef.current = hide()
+  }
 
-With dependencies:
-
-```tsx
-const Demo = () => {
-  const [userId, setUserId] = useState(1)
-
-  useFrameTimeout((timestamp) => {
-    console.log('Fetching data for user', userId)
-    // Fetch user data after delay
-  }, 1000, [userId])
+  if (!visible) return null
 
   return (
-    <div>
-      <button onClick={() => setUserId(1)}>User 1</button>
-      <button onClick={() => setUserId(2)}>User 2</button>
+    <div
+      className="toast"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {message}
     </div>
   )
 }
@@ -72,35 +69,32 @@ const Demo = () => {
 
 ## API
 
+### Types
+
+```tsx
+type FrameTimeoutHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
+type Cancel = () => void
+type Schedule<A extends unknown[] = []> = (...args: A) => Cancel
+```
+
 ### `setFrameTimeout(handler, delay?, ...args)`
 
-**Parameters:**
+- `handler: FrameTimeoutHandler<A>` - Callback to execute
+- `delay?: number` - Delay in milliseconds (default: `0`)
+- `...args: A` - Arguments passed to the handler
+- **Returns:** `Cancel`
 
-- `handler: (timestamp: number, ...args: A) => void` - Callback function to execute
-- `delay?: number` - Delay in milliseconds before scheduling the animation frame (default: `0`)
-- `...args: A` - Additional arguments to pass to the handler
+### `useFrameTimeout(handler, delay?)`
 
-**Returns:**
+- `handler: FrameTimeoutHandler<A>` - Callback to execute
+- `delay?: number` - Delay in milliseconds (default: `0`)
+- **Returns:** `Schedule<A>`
 
-- `() => void` - Cancel function that clears both the timeout and animation frame
-
-### `useFrameTimeout(handler, delay?, deps?)`
-
-**Parameters:**
-
-- `handler: (timestamp: number) => void` - Callback function to execute
-- `delay?: number` - Delay in milliseconds before scheduling the animation frame
-- `deps?: DependencyList` - Optional dependencies that trigger timeout restart (default: `[]`)
-
-**Returns:**
-
-`void` - The hook automatically handles cleanup on unmount
-
-**Note:** The `delay` parameter is always reactive - changing it will restart the timeout. Use the `deps` array for other dependencies that should trigger a restart.
+The handler uses the latest version from each render. The schedule function is memoized by delay.
 
 ## Why use this?
 
-Combines `setTimeout` timing with `requestAnimationFrame` precision, providing:
+Combines `setTimeout` timing with `requestAnimationFrame` precision:
 
-- **Frame synchronization** - Executes callbacks at the start of the render cycle, preventing layout thrashing and visual jitter caused by mid-frame updates.
-- **Tab visibility handling** - Defers the callback execution until the tab becomes active. This ensures visual updates occur exactly when the user returns, rather than running invisibly in the background.
+- **Frame synchronization** - Executes at frame start, preventing layout thrashing and visual jitter
+- **Tab visibility** - Pauses when tab is inactive, resumes when user returns

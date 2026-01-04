@@ -1,6 +1,6 @@
 {
   "name": "@use-raf/timeout",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Schedule callbacks to execute on the next animation frame after a specified delay",
   "type": "module",
   "main": "./src/index.ts",

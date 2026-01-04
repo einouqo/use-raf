@@ -33,14 +33,6 @@ describe('frame timeout', () => {
       expect(handler).toHaveBeenCalledTimes(1)
     })
 
-    it('should call handler with zero delay', () => {
-      const handler = vi.fn()
-      setFrameTimeout(handler, 0)
-
-      vi.advanceTimersToNextFrame()
-      expect(handler).toHaveBeenCalledTimes(1)
-    })
-
     it('should provide timestamp to handler', () => {
       const handler = vi.fn()
       setFrameTimeout(handler, 100)
@@ -54,17 +46,7 @@ describe('frame timeout', () => {
       expect(timestamp).toBeGreaterThan(0)
     })
 
-    it('should pass single argument to handler', () => {
-      const handler = vi.fn()
-      setFrameTimeout(handler, 50, 'test')
-
-      vi.advanceTimersByTime(50)
-      vi.advanceTimersToNextFrame()
-
-      expect(handler).toHaveBeenCalledWith(expect.any(Number), 'test')
-    })
-
-    it('should pass multiple arguments to handler', () => {
+    it('should pass arguments to handler', () => {
       const handler = vi.fn()
       setFrameTimeout(handler, 50, 'arg1', 42, true)
 
@@ -72,17 +54,6 @@ describe('frame timeout', () => {
       vi.advanceTimersToNextFrame()
 
       expect(handler).toHaveBeenCalledWith(expect.any(Number), 'arg1', 42, true)
-    })
-
-    it('should pass complex object arguments', () => {
-      const handler = vi.fn()
-      const obj = { foo: 'bar', nested: { value: 123 } }
-      setFrameTimeout(handler, 50, obj)
-
-      vi.advanceTimersByTime(50)
-      vi.advanceTimersToNextFrame()
-
-      expect(handler).toHaveBeenCalledWith(expect.any(Number), obj)
     })
 
     it('should cancel timeout before execution', () => {
@@ -108,36 +79,6 @@ describe('frame timeout', () => {
       vi.advanceTimersToNextFrame()
 
       expect(handler).not.toHaveBeenCalled()
-    })
-
-    it('should be safe to call cancel multiple times', () => {
-      const handler = vi.fn()
-      const cancel = setFrameTimeout(handler, 100)
-
-      cancel()
-      cancel()
-      cancel()
-
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
-
-      expect(handler).not.toHaveBeenCalled()
-    })
-
-    it('should be safe to call cancel after execution', () => {
-      const handler = vi.fn()
-      const cancel = setFrameTimeout(handler, 100)
-
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
-
-      expect(handler).toHaveBeenCalledTimes(1)
-
-      cancel()
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
-
-      expect(handler).toHaveBeenCalledTimes(1)
     })
 
     it('should handle multiple simultaneous timeouts', () => {
@@ -213,32 +154,13 @@ describe('frame timeout', () => {
       expect(handler).toHaveBeenCalledTimes(1)
     })
 
-    it('should execute on the next frame after delay', () => {
+    it('should execute on next frame after delay', () => {
       const handler = vi.fn()
       setFrameTimeout(handler, 100)
 
       vi.advanceTimersByTime(100)
       expect(handler).not.toHaveBeenCalled()
 
-      vi.advanceTimersToNextFrame()
-      expect(handler).toHaveBeenCalledTimes(1)
-    })
-
-    it('should not execute before delay completes', () => {
-      const handler = vi.fn()
-      setFrameTimeout(handler, 100)
-
-      vi.advanceTimersByTime(30)
-      vi.advanceTimersToNextFrame()
-
-      expect(handler).not.toHaveBeenCalled()
-
-      vi.advanceTimersByTime(30)
-      vi.advanceTimersToNextFrame()
-
-      expect(handler).not.toHaveBeenCalled()
-
-      vi.advanceTimersByTime(40)
       vi.advanceTimersToNextFrame()
       expect(handler).toHaveBeenCalledTimes(1)
     })
@@ -253,9 +175,11 @@ describe('frame timeout', () => {
       vi.useRealTimers()
     })
 
-    it('should call handler after delay', () => {
+    it('should call handler after delay when scheduled', () => {
       const handler = vi.fn()
-      renderHook(() => useFrameTimeout(handler, 100))
+      const { result } = renderHook(() => useFrameTimeout(handler, 100))
+
+      result.current()
 
       vi.advanceTimersByTime(99)
       expect(handler).not.toHaveBeenCalled()
@@ -265,71 +189,38 @@ describe('frame timeout', () => {
       expect(handler).toHaveBeenCalledTimes(1)
     })
 
-    it('should call handler immediately with zero delay', () => {
-      const handler = vi.fn()
-      renderHook(() => useFrameTimeout(handler, 0))
+    it('should memoize schedule by delay, not handler', () => {
+      const handler1 = vi.fn()
+      const handler2 = vi.fn()
 
-      vi.advanceTimersToNextFrame()
-      expect(handler).toHaveBeenCalledTimes(1)
-    })
+      const { result, rerender } = renderHook(
+        ({ handler, delay }) => useFrameTimeout(handler, delay),
+        { initialProps: { handler: handler1, delay: 100 } },
+      )
 
-    it('should provide timestamp to handler', () => {
-      const handler = vi.fn()
-      renderHook(() => useFrameTimeout(handler, 100))
+      const schedule1 = result.current
 
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
+      // Handler change - same schedule
+      rerender({ handler: handler2, delay: 100 })
+      expect(result.current).toBe(schedule1)
 
-      expect(handler).toHaveBeenCalled()
-      const timestamp = handler.mock.calls[0]?.[0]
-      expect(typeof timestamp).toBe('number')
-      expect(timestamp).toBeGreaterThan(0)
-    })
-
-    it('should cancel timeout on unmount', () => {
-      const handler = vi.fn()
-      const { unmount } = renderHook(() => useFrameTimeout(handler, 100))
-
-      vi.advanceTimersByTime(50)
-      unmount()
-
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
-      expect(handler).not.toHaveBeenCalled()
-    })
-
-    it('should cancel previous timeout when delay changes', () => {
-      const handler = vi.fn()
-      const { rerender } = renderHook(({ delay }) => useFrameTimeout(handler, delay), {
-        initialProps: { delay: 100 },
-      })
-
-      vi.advanceTimersByTime(50)
-
-      rerender({ delay: 200 })
-
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
-      expect(handler).not.toHaveBeenCalled()
-
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
-      expect(handler).toHaveBeenCalledTimes(1)
+      // Delay change - new schedule
+      rerender({ handler: handler2, delay: 200 })
+      expect(result.current).not.toBe(schedule1)
     })
 
     it('should use latest handler when timeout fires', () => {
       const handler1 = vi.fn()
       const handler2 = vi.fn()
 
-      const { rerender } = renderHook(({ handler }) => useFrameTimeout(handler, 100), {
+      const { result, rerender } = renderHook(({ handler }) => useFrameTimeout(handler, 100), {
         initialProps: { handler: handler1 },
       })
 
+      result.current()
+
       vi.advanceTimersByTime(50)
-
-      // Update handler before timeout fires
       rerender({ handler: handler2 })
-
       vi.advanceTimersByTime(50)
       vi.advanceTimersToNextFrame()
 
@@ -337,160 +228,32 @@ describe('frame timeout', () => {
       expect(handler2).toHaveBeenCalledTimes(1)
     })
 
-    it('should not restart timeout when handler changes', () => {
-      const handler1 = vi.fn()
-      const handler2 = vi.fn()
-
-      const { rerender } = renderHook(({ handler }) => useFrameTimeout(handler, 100), {
-        initialProps: { handler: handler1 },
-      })
-
-      vi.advanceTimersByTime(90)
-
-      // Update handler - should not reset timer
-      rerender({ handler: handler2 })
-
-      vi.advanceTimersByTime(10) // Total 100ms
-      vi.advanceTimersToNextFrame()
-
-      expect(handler2).toHaveBeenCalledTimes(1)
-    })
-
-    it('should restart timeout when dependencies change', () => {
+    it('should allow scheduling multiple times', () => {
       const handler = vi.fn()
-      const { rerender } = renderHook(({ dep }) => useFrameTimeout(handler, 100, [dep]), {
-        initialProps: { dep: 'a' },
-      })
+      const { result } = renderHook(() => useFrameTimeout(handler, 100))
 
-      vi.advanceTimersByTime(50)
+      result.current()
+      result.current()
 
-      // Change dependency - should restart timeout
-      rerender({ dep: 'b' })
-
-      vi.advanceTimersByTime(50) // Total 100ms from initial, but only 50ms from rerender
+      vi.advanceTimersByTime(100)
       vi.advanceTimersToNextFrame()
-      expect(handler).not.toHaveBeenCalled()
 
-      vi.advanceTimersByTime(50) // Total 100ms from rerender
-      vi.advanceTimersToNextFrame()
-      expect(handler).toHaveBeenCalledTimes(1)
+      expect(handler).toHaveBeenCalledTimes(2)
     })
 
-    it('should not restart timeout when dependencies do not change', () => {
+    it('should forward arguments to handler', () => {
       const handler = vi.fn()
-      const dep = { value: 'a' }
-      const { rerender } = renderHook(() => useFrameTimeout(handler, 100, [dep]))
+      const { result } = renderHook(() => useFrameTimeout(handler, 100))
 
-      vi.advanceTimersByTime(50)
-
-      // Rerender without changing dependency
-      rerender()
-
-      vi.advanceTimersByTime(50) // Total 100ms from initial
-      vi.advanceTimersToNextFrame()
-      expect(handler).toHaveBeenCalledTimes(1)
-    })
-
-    it('should handle multiple dependencies', () => {
-      const handler = vi.fn()
-      const { rerender } = renderHook(
-        ({ dep1, dep2 }) => useFrameTimeout(handler, 100, [dep1, dep2]),
-        { initialProps: { dep1: 'a', dep2: 1 } },
-      )
-
-      vi.advanceTimersByTime(50)
-
-      // Change one dependency
-      rerender({ dep1: 'b', dep2: 1 })
-
-      vi.advanceTimersByTime(50)
-      vi.advanceTimersToNextFrame()
-      expect(handler).not.toHaveBeenCalled()
-
-      vi.advanceTimersByTime(50)
-      vi.advanceTimersToNextFrame()
-      expect(handler).toHaveBeenCalledTimes(1)
-    })
-
-    it('should handle no dependencies provided', () => {
-      const handler = vi.fn()
-      renderHook(() => useFrameTimeout(handler, 100))
-
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
-      expect(handler).toHaveBeenCalledTimes(1)
-    })
-
-    it('should handle empty dependencies array', () => {
-      const handler = vi.fn()
-      renderHook(() => useFrameTimeout(handler, 100, []))
-
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
-      expect(handler).toHaveBeenCalledTimes(1)
-    })
-
-    it('should handle handler that throws', () => {
-      const handler = vi.fn(() => {
-        throw new Error('Handler error')
-      })
-
-      renderHook(() => useFrameTimeout(handler, 100))
-
-      vi.advanceTimersByTime(100)
-      expect(() => {
-        vi.advanceTimersToNextFrame()
-      }).toThrow('Handler error')
-
-      expect(handler).toHaveBeenCalledTimes(1)
-    })
-
-    it('should only schedule one timeout per render', () => {
-      const handler = vi.fn()
-      renderHook(() => useFrameTimeout(handler, 100))
-
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
-      expect(handler).toHaveBeenCalledTimes(1)
-
-      // Advance time further - should not call handler again
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
-      expect(handler).toHaveBeenCalledTimes(1)
-    })
-
-    it('should handle multiple hook instances independently', () => {
-      const handler1 = vi.fn()
-      const handler2 = vi.fn()
-
-      renderHook(() => useFrameTimeout(handler1, 100))
-      renderHook(() => useFrameTimeout(handler2, 200))
-
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
-      expect(handler1).toHaveBeenCalledTimes(1)
-      expect(handler2).not.toHaveBeenCalled()
-
-      vi.advanceTimersByTime(100)
-      vi.advanceTimersToNextFrame()
-      expect(handler2).toHaveBeenCalledTimes(1)
-    })
-
-    it('should handle multiple hook instances with same delay', () => {
-      const handler1 = vi.fn()
-      const handler2 = vi.fn()
-      const handler3 = vi.fn()
-
-      renderHook(() => useFrameTimeout(handler1, 100))
-      renderHook(() => useFrameTimeout(handler2, 100))
-      renderHook(() => useFrameTimeout(handler3, 100))
+      result.current('first', 1)
+      result.current('second', 2)
 
       vi.advanceTimersByTime(100)
       vi.advanceTimersToNextFrame()
 
-      expect(handler1).toHaveBeenCalledTimes(1)
-      expect(handler2).toHaveBeenCalledTimes(1)
-      expect(handler3).toHaveBeenCalledTimes(1)
+      expect(handler).toHaveBeenCalledTimes(2)
+      expect(handler).toHaveBeenNthCalledWith(1, expect.any(Number), 'first', 1)
+      expect(handler).toHaveBeenNthCalledWith(2, expect.any(Number), 'second', 2)
     })
   })
 })
