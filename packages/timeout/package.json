@@ -1,7 +1,7 @@
 {
-  "name": "@use-raf/timer",
-  "version": "0.0.2",
-  "description": "React frame-synchronized timer hook",
+  "name": "@use-raf/timeout",
+  "version": "0.0.1",
+  "description": "Schedule callbacks to execute on the next animation frame after a specified delay",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -29,12 +29,7 @@
     "requestAnimationFrame",
     "raf",
     "animation",
-    "interval",
-    "timer",
-    "schedule",
-    "setTimer",
-    "progress",
-    "countdown"
+    "timeout"
   ],
   "scripts": {
     "build": "tsup",
@@ -45,10 +40,6 @@
   },
   "peerDependencies": {
     "react": ">=16.14"
-  },
-  "dependencies": {
-    "@use-raf/loop": "workspace:*",
-    "@use-raf/timeout": "workspace:*"
   },
   "author": "einouqo",
   "repository": {
