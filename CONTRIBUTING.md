@@ -27,6 +27,22 @@ git checkout -b feature/your-feature-name
 
 ### 3. Make Your Changes
 
+This project uses [devenv](https://devenv.sh/) for reproducible development environments.
+
+**Option A: Manual activation**
+
+```bash
+devenv shell
+```
+
+**Option B: Automatic activation with direnv** (recommended)
+
+Install [direnv](https://direnv.net/) to automatically activate the environment when entering the directory:
+
+```bash
+direnv allow
+```
+
 Write your code and ensure it follows the project standards.
 
 ### 4. Commit Your Changes
