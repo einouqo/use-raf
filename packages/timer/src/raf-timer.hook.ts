@@ -1,4 +1,6 @@
+import type { RafLoopCallback } from '@use-raf/loop'
 import { useRafLoop } from '@use-raf/loop'
+import { setFrameTimeout } from '@use-raf/timeout'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export interface RafTimerProps {
@@ -114,10 +116,12 @@ export const useRafTimer = ({
     callbacksRef.current.onUpdate?.(v)
   }, [])
 
-  const onFrame = useCallback(
-    (_, delta) => {
+  const frameTimestamp = useRef<number>()
+  const onFrame = useCallback<RafLoopCallback>(
+    (timestamp, delta) => {
       const elapsed = elapsedRef.current + delta
       setElapsed(elapsed)
+      frameTimestamp.current = timestamp
     },
     [setElapsed],
   )
@@ -135,14 +139,15 @@ export const useRafTimer = ({
     }
 
     const left = duration - elapsedRef.current
-    const timeout = setTimeout(() => {
-      const elapsed = Math.max(elapsedRef.current, duration)
-      setElapsed(elapsed)
+    const cancel = setFrameTimeout((timestamp) => {
+      const last = frameTimestamp.current || timestamp
+      const delta = timestamp - last
+      onFrame(timestamp, delta)
       finalize()
     }, left)
 
-    return () => clearTimeout(timeout)
-  }, [isActive, duration, finalize, setElapsed])
+    return cancel
+  }, [isActive, duration, finalize, onFrame])
 
   const reset = useCallback(() => {
     stop()

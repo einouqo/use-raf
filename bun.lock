@@ -33,11 +33,19 @@
         "react": ">=16.14",
       },
     },
+    "packages/timeout": {
+      "name": "@use-raf/timeout",
+      "version": "0.0.1",
+      "peerDependencies": {
+        "react": ">=16.14",
+      },
+    },
     "packages/timer": {
       "name": "@use-raf/timer",
       "version": "0.0.1",
       "dependencies": {
         "@use-raf/loop": "workspace:*",
+        "@use-raf/timeout": "workspace:*",
       },
       "peerDependencies": {
         "react": ">=16.14",
@@ -270,6 +278,8 @@
     "@types/scheduler": ["@types/scheduler@0.16.8", "", {}, "sha512-WZLiwShhwLRmeV6zH+GkbOFT6Z6VklCItrDioxUnv+u4Ll+8vKeFySoFyK/0ctcRpOmwAicELfmys1sDc/Rw+A=="],
 
     "@use-raf/loop": ["@use-raf/loop@workspace:packages/loop"],
+
+    "@use-raf/timeout": ["@use-raf/timeout@workspace:packages/timeout"],
 
     "@use-raf/timer": ["@use-raf/timer@workspace:packages/timer"],
 

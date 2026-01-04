@@ -53,6 +53,6 @@ Git hooks (via Husky) will automatically:
 - **pre-commit** — Run linting and tests (`bun run verify`)
 - **commit-msg** — Validate conventional commit format
 
-<!-- links -->
+<!--links:start-->
 [convent-commits]: https://www.conventionalcommits.org/en/v1.0.0/
-<!-- end links -->
+<!--links:end-->

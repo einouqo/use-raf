@@ -106,10 +106,3 @@ const ProgressDemo = () => {
 **Returns:**
 
 - `progress: number` - Progress value between 0 and 1
-
-## Features
-
-- **Frame-synchronized** - Uses `requestAnimationFrame` for smooth updates
-- **Pause/resume** - Stop and restart without losing elapsed time
-- **Throttling** - Control update frequency to optimize performance
-- **Precise completion** - Automatically completes at exact duration using `setTimeout`
