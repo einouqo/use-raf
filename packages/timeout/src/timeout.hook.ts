@@ -1,10 +1,10 @@
 import type { DependencyList } from 'react'
 import { useEffect, useRef } from 'react'
-import type { FrameTimoutHander } from './timeout.func'
+import type { FrameTimeoutHandler } from './timeout.func'
 import { setFrameTimeout } from './timeout.func'
 
 export const useFrameTimeout = (
-  handler: FrameTimoutHander,
+  handler: FrameTimeoutHandler,
   delay?: number,
   deps: DependencyList = [],
 ) => {

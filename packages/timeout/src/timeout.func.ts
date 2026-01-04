@@ -5,7 +5,7 @@
  * @param timestamp - The DOMHighResTimeStamp from requestAnimationFrame
  * @param args - Additional arguments passed to setFrameTimeout
  */
-export type FrameTimoutHander<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
+export type FrameTimeoutHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
 
 /**
  * Function to cancel a scheduled frame timeout.
@@ -45,7 +45,7 @@ export type CancelFunc = () => void
  * ```
  */
 export const setFrameTimeout = <A extends unknown[] = []>(
-  handler: FrameTimoutHander<A>,
+  handler: FrameTimeoutHandler<A>,
   delay?: number,
   ...args: A
 ): CancelFunc => {
