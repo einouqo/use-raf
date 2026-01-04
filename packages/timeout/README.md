@@ -36,6 +36,7 @@ cancel()
 A React hook wrapper for `setFrameTimeout` that automatically handles cleanup and supports dependency tracking.
 
 ```tsx
+import { useState } from 'react'
 import { useFrameTimeout } from '@use-raf/timeout'
 
 const Demo = () => {
