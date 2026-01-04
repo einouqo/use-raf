@@ -10,6 +10,7 @@ jobs:
     outputs:
       loop: ${{ steps.changes.outputs.loop }}
       timer: ${{ steps.changes.outputs.timer }}
+      timeout: ${{ steps.changes.outputs.timeout }}
     steps:
       - uses: dorny/paths-filter@v3
         id: changes
@@ -17,6 +18,7 @@ jobs:
           filters: |
             loop: 'packages/loop/**'
             timer: 'packages/timer/**'
+            timeout: 'packages/timeout/**'
   loop:
     needs: [ cache-warmup, changes ]
     if: needs.changes.outputs.loop == 'true'
@@ -25,3 +27,7 @@ jobs:
     needs: [ cache-warmup, changes ]
     if: needs.changes.outputs.timer == 'true'
     uses: ./.github/workflows/timer.yaml
+  timeout:
+    needs: [ cache-warmup, changes ]
+    if: needs.changes.outputs.timeout == 'true'
+    uses: ./.github/workflows/timeout.yaml
