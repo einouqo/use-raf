@@ -8,17 +8,17 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
+      skd: ${{ steps.changes.outputs.skd }}
       loop: ${{ steps.changes.outputs.loop }}
       timer: ${{ steps.changes.outputs.timer }}
-      timeout: ${{ steps.changes.outputs.timeout }}
     steps:
       - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
+            skd: 'packages/skd/**'
             loop: 'packages/loop/**'
             timer: 'packages/timer/**'
-            timeout: 'packages/timeout/**'
   loop:
     needs: [ cache-warmup, changes ]
     if: needs.changes.outputs.loop == 'true'
@@ -27,7 +27,7 @@ jobs:
     needs: [ cache-warmup, changes ]
     if: needs.changes.outputs.timer == 'true'
     uses: ./.github/workflows/timer.yaml
-  timeout:
+  skd:
     needs: [ cache-warmup, changes ]
-    if: needs.changes.outputs.timeout == 'true'
-    uses: ./.github/workflows/timeout.yaml
+    if: needs.changes.outputs.skd == 'true'
+    uses: ./.github/workflows/skd.yaml

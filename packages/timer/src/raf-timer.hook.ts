@@ -1,6 +1,6 @@
 import type { RafLoopCallback } from '@use-raf/loop'
 import { useRafLoop } from '@use-raf/loop'
-import { setFrameTimeout } from '@use-raf/timeout'
+import { setFrameTimeout } from '@use-raf/skd'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export interface RafTimerProps {

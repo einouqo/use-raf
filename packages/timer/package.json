@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@use-raf/loop": "workspace:*",
-    "@use-raf/timeout": "workspace:*"
+    "@use-raf/skd": "workspace:*"
   },
   "author": "einouqo",
   "repository": {
