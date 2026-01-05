@@ -1,4 +1,4 @@
-name: '@use-raf/timeout'
+name: '@use-raf/skd'
 on: [ workflow_call ]
 jobs:
   lint:
@@ -15,7 +15,7 @@ jobs:
         shell: devenv shell bash -- -e {0}
         run: |
           bun i
-          bun run --filter @use-raf/timeout lint
+          bun run --filter @use-raf/skd lint
   test:
     runs-on: ubuntu-latest
     permissions:
@@ -30,4 +30,4 @@ jobs:
         shell: devenv shell bash -- -e {0}
         run: |
           bun i
-          bun run --filter @use-raf/timeout test
+          bun run --filter @use-raf/skd test
