@@ -54,8 +54,11 @@ export const setFrameInterval = <A extends unknown[] = []>(
 
     return setFrameTimeout(
       (timestamp, ...args) => {
-        handler(timestamp, ...args)
-        cancel.current = schedule(timestamp)
+        try {
+          handler(timestamp, ...args)
+        } finally {
+          cancel.current = schedule(timestamp)
+        }
       },
       after,
       ...args,

@@ -153,14 +153,15 @@ describe('frame interval', () => {
       throw new Error('Handler error')
     })
 
-    setFrameInterval(handler, 100)
+    setFrameInterval(handler)
 
-    vi.advanceTimersByTime(100)
-    expect(() => {
-      vi.advanceTimersToNextFrame()
-    }).toThrow('Handler error')
+    for (let i = 0; i < 2; i++) {
+      expect(() => {
+        vi.advanceTimersToNextFrame()
+      }).toThrow('Handler error')
+    }
 
-    expect(handler).toHaveBeenCalledTimes(1)
+    expect(handler).toHaveBeenCalledTimes(2)
   })
 
   it('should maintain accurate intervals over time', () => {
