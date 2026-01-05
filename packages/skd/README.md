@@ -1,6 +1,7 @@
 # @use-raf/skd
 
-> Frame-synchronized replacement for _window_ `setTimeout` and `setInterval` methods
+> **skd** is short for **scheduler** and refers to scheduling utilities.\
+> Frame-synchronized replacement for `setTimeout` and `setInterval` window's methods
 
 Schedule callbacks to execute on the animation frame.
 
