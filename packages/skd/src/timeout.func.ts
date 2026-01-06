@@ -1,13 +1,14 @@
-import type { Cancel } from './types'
+import { setFrame } from './frame.func'
+import type { Cancel, Optional } from './types'
 
 /**
  * Handler function called on the next animation frame after the specified delay.
  *
  * @template A - Tuple type for additional arguments
  * @param timestamp - The DOMHighResTimeStamp from requestAnimationFrame
- * @param args - Additional arguments passed to setFrameTimeout
+ * @param args - Additional arguments passed to setTimeoutFrame
  */
-export type FrameTimeoutHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
+export type TimeoutFrameHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
 
 /**
  * Schedules a handler to be called on the next animation frame after a specified delay.
@@ -26,31 +27,29 @@ export type FrameTimeoutHandler<A extends unknown[] = []> = (timestamp: number, 
  * @example
  * ```ts
  * // Basic usage with delay
- * const cancel = setFrameTimeout((timestamp) => {
+ * const cancel = setTimeoutFrame((timestamp) => {
  *   console.log('Executed at', timestamp)
  * }, 1000)
  *
  * // With additional arguments
- * setFrameTimeout((timestamp, message, count) => {
+ * setTimeoutFrame((timestamp, message, count) => {
  *   console.log(timestamp, message, count)
  * }, 500, 'Hello', 42)
  *
  * // Cancel before execution
- * const cancel = setFrameTimeout(handler, 1000)
+ * const cancel = setTimeoutFrame(handler, 1000)
  * cancel() // Prevents execution
  * ```
  */
-export const setFrameTimeout = <A extends unknown[] = []>(
-  handler: FrameTimeoutHandler<A>,
+export const setTimeoutFrame = <A extends unknown[] = []>(
+  handler: TimeoutFrameHandler<A>,
   delay?: number,
   ...args: A
 ): Cancel => {
-  let frame: number | undefined
+  const frame = { cancel: undefined as Optional<Cancel> }
   const timeout = setTimeout(
     (...args: A) => {
-      frame = requestAnimationFrame((timestamp) => {
-        handler(timestamp, ...args)
-      })
+      frame.cancel = setFrame((timestamp) => handler(timestamp, ...args))
     },
     delay,
     ...args,
@@ -58,8 +57,6 @@ export const setFrameTimeout = <A extends unknown[] = []>(
 
   return () => {
     clearTimeout(timeout)
-    if (frame !== undefined) {
-      cancelAnimationFrame(frame)
-    }
+    frame.cancel?.()
   }
 }

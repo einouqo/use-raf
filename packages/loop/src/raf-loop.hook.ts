@@ -1,9 +1,11 @@
+import type { Cancel, FrameHandler, TimeoutFrameHandler } from '@use-raf/skd'
+import { setFrame, setTimeoutFrame } from '@use-raf/skd'
 import { useCallback, useEffect, useRef } from 'react'
 
 /**
  * Callback function that receives the current timestamp and delta time.
  *
- * @param timestamp - The current time in milliseconds from `performance.now()`
+ * @param timestamp - The DOMHighResTimeStamp in milliseconds from requestAnimationFrame
  * @param delta - Time elapsed in milliseconds since the last callback invocation
  */
 export type RafLoopCallback = (timestamp: number, delta: number) => void
@@ -53,8 +55,6 @@ export interface RafLoopReturn {
    */
   stop: () => void
 }
-
-type LoopCallback = (timestamp: number) => void
 
 const avg = (first: number, ...rest: number[]) =>
   (first + rest.reduce((sum, num) => sum + num, 0)) / (rest.length + 1)
@@ -114,62 +114,47 @@ export const useRafLoop = (
   }, [throttle])
 
   const frameRef = useRef<{
-    id: number
-    type: 'raf' | 'timeout'
-  } | null>(null)
-  const frameTimeRef = useRef<{
+    cancel: Cancel
     timestamp?: number
     duration?: number
-  }>({})
+  } | null>(null)
 
-  const request = useCallback((loop: LoopCallback) => {
-    if (frameRef.current === null) {
-      return
-    }
-    frameRef.current.id = requestAnimationFrame(loop)
-    frameRef.current.type = 'raf'
-  }, [])
-
-  const delay = useCallback(
-    (loop: LoopCallback, duration: number) => {
-      if (frameRef.current === null) {
-        return
-      }
-      frameRef.current.id = setTimeout(() => request(loop), duration)
-      frameRef.current.type = 'timeout'
-    },
-    [request],
-  )
-
-  const loop = useCallback<LoopCallback>(
-    (timestamp) => {
+  const loop = useCallback(
+    ((timestamp: number) => {
       if (frameRef.current === null) {
         return
       }
 
-      const last = frameTimeRef.current.timestamp
+      const last = frameRef.current.timestamp
       const delta = timestamp - (last ?? timestamp)
+
       callbackRef.current(timestamp, delta)
 
-      const duration = frameTimeRef.current.duration ?? delta
-      frameTimeRef.current.duration = avg(duration, duration, delta)
-      frameTimeRef.current.timestamp = timestamp
+      // NOTE: post-flight check in case stop was triggered during callback execution
+      if (frameRef.current === null) {
+        return
+      }
 
-      throttleRef.current > frameTimeRef.current.duration
-        ? delay(loop, throttleRef.current)
-        : request(loop)
-    },
-    [delay, request],
+      const duration = frameRef.current.duration ?? delta
+      frameRef.current.duration = avg(duration, duration, delta)
+      frameRef.current.timestamp = timestamp
+
+      frameRef.current.cancel =
+        throttleRef.current > frameRef.current.duration
+          ? setTimeoutFrame(loop, throttleRef.current)
+          : setFrame(loop)
+    }) satisfies FrameHandler & TimeoutFrameHandler,
+    [],
   )
 
   const stop = useCallback(() => {
     if (frameRef.current === null) {
       return
     }
-    frameRef.current.type === 'raf'
-      ? cancelAnimationFrame(frameRef.current.id)
-      : clearTimeout(frameRef.current.id)
+
+    frameRef.current.cancel()
     frameRef.current = null
+
     setActiveRef.current?.(false)
   }, [])
 
@@ -178,12 +163,10 @@ export const useRafLoop = (
       return
     }
 
-    const id = requestAnimationFrame(loop)
-    frameRef.current = { id, type: 'raf' }
-    setActiveRef.current?.(true)
+    const cancel = setFrame(loop)
+    frameRef.current = { cancel }
 
-    frameTimeRef.current.timestamp = undefined
-    frameTimeRef.current.duration = undefined
+    setActiveRef.current?.(true)
   }, [loop])
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: lifecycle effect

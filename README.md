@@ -2,7 +2,7 @@
 
 > Build better UX with frame-synchronized hooks.
 
-[![codecov][codecov-badge]][codecov-lint]
+[![codecov][codecov-badge]][codecov-link]
 [![CodSpeed Badge][codspeed-badge]][codspeed-link]
 [![License][license-badge]][license-link]
 
@@ -10,7 +10,7 @@ A hook collection built over the [requestAnimationFrame window API][mdn-window-r
 
 <!--links:start-->
 [codecov-badge]: https://codecov.io/github/einouqo/use-raf/graph/badge.svg?token=GGLR5U3RXO
-[codecov-lint]: https://codecov.io/github/einouqo/use-raf
+[codecov-link]: https://codecov.io/github/einouqo/use-raf
 [codspeed-badge]: https://img.shields.io/endpoint?url=https://codspeed.io/badge.json
 [codspeed-link]: https://codspeed.io/einouqo/use-raf
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg

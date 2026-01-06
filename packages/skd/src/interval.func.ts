@@ -1,21 +1,21 @@
-import type { FrameTimeoutHandler } from './timeout.func'
-import { setFrameTimeout } from './timeout.func'
-import type { Cancel } from './types'
+import type { TimeoutFrameHandler } from './timeout.func'
+import { setTimeoutFrame } from './timeout.func'
+import type { Cancel, Optional } from './types'
 
 /**
  * Handler function called repeatedly on animation frames at the specified interval.
  *
  * @template A - Tuple type for additional arguments
  * @param timestamp - The DOMHighResTimeStamp from requestAnimationFrame
- * @param args - Additional arguments passed to setFrameInterval
+ * @param args - Additional arguments passed to setIntervalFrame
  */
-export type FrameIntervalHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
+export type IntervalFrameHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
 
 /**
  * Schedules a handler to be called repeatedly on animation frames at the specified interval.
  *
  * This function provides drift-corrected interval execution synchronized with the browser's
- * rendering cycle. It uses `setFrameTimeout` internally and compensates for timing drift
+ * rendering cycle. It uses `setTimeoutFrame` internally and compensates for timing drift
  * to maintain accurate intervals over time.
  *
  * @template A - Tuple type for additional arguments passed to the handler
@@ -27,12 +27,12 @@ export type FrameIntervalHandler<A extends unknown[] = []> = (timestamp: number,
  * @example
  * ```ts
  * // Execute every second
- * const cancel = setFrameInterval((timestamp) => {
+ * const cancel = setIntervalFrame((timestamp) => {
  *   console.log('Tick at', timestamp)
  * }, 1000)
  *
  * // With arguments
- * setFrameInterval((timestamp, message) => {
+ * setIntervalFrame((timestamp, message) => {
  *   console.log(message, timestamp)
  * }, 500, 'Update:')
  *
@@ -40,15 +40,20 @@ export type FrameIntervalHandler<A extends unknown[] = []> = (timestamp: number,
  * cancel()
  * ```
  */
-export const setFrameInterval = <A extends unknown[] = []>(
-  handler: FrameIntervalHandler<A>,
+export const setIntervalFrame = <A extends unknown[] = []>(
+  handler: IntervalFrameHandler<A>,
   delay: number = 0,
   ...args: A
 ): Cancel => {
-  const started = performance.now()
+  // NOTE: use AnimationTimeline's currentTime property when available for elapsed time
+  // calculation, since for Window objects the requestAnimationFrame callback
+  // timestamp is "equal to document.timeline.currentTime" according to MDN documentation.
+  // Source: https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame#timestamp
+  const started =
+    (document?.timeline?.currentTime as number | undefined | null) ?? performance.now()
 
-  const cancel = { current: undefined as Cancel | undefined }
-  const tick: FrameTimeoutHandler<A> = (timestamp, ...args) => {
+  const timeout = { cancel: undefined as Optional<Cancel> }
+  const tick: TimeoutFrameHandler<A> = (timestamp, ...args) => {
     const elapsed = timestamp - started
     const drift = delay > 0 ? elapsed % delay : 0
     const after = delay - drift
@@ -56,11 +61,10 @@ export const setFrameInterval = <A extends unknown[] = []>(
     try {
       handler(timestamp, ...args)
     } finally {
-      cancel.current = setFrameTimeout(tick, after, ...args)
+      timeout.cancel = setTimeoutFrame(tick, after, ...args)
     }
   }
+  timeout.cancel = setTimeoutFrame(tick, delay, ...args)
 
-  cancel.current = setFrameTimeout(tick, delay, ...args)
-
-  return () => cancel.current?.()
+  return () => timeout.cancel?.()
 }

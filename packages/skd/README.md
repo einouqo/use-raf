@@ -13,20 +13,36 @@ npm install @use-raf/skd
 
 ## Usage
 
-### `setFrameTimeout`
+### `setFrame`
 
-A function that combines `setTimeout` and `requestAnimationFrame` to execute a callback after a delay, synchronized with the browser's rendering cycle.
+A thin wrapper around `requestAnimationFrame` that schedules a handler to be called on the next animation frame.
 
 ```tsx
-import { setFrameTimeout } from '@use-raf/skd'
+import { setFrame } from '@use-raf/skd'
+
+// Execute on next frame
+const cancel = setFrame((timestamp) => {
+  console.log('Frame at', timestamp)
+})
+
+// Cancel before execution
+cancel()
+```
+
+### `setTimeoutFrame`
+
+Combines `setTimeout` and `requestAnimationFrame` to execute a callback after a delay, synchronized with the browser's rendering cycle.
+
+```tsx
+import { setTimeoutFrame } from '@use-raf/skd'
 
 // Basic usage
-const cancel = setFrameTimeout((timestamp) => {
+const cancel = setTimeoutFrame((timestamp) => {
   console.log('Executed at', timestamp)
 }, 1000)
 
 // With additional arguments
-setFrameTimeout((timestamp, message, count) => {
+setTimeoutFrame((timestamp, message, count) => {
   console.log(timestamp, message, count)
 }, 500, 'Hello', 42)
 
@@ -34,20 +50,20 @@ setFrameTimeout((timestamp, message, count) => {
 cancel()
 ```
 
-### `setFrameInterval`
+### `setIntervalFrame`
 
-A function that schedules a handler to be called repeatedly on animation frames at the specified interval, with drift correction.
+Schedules a handler to be called repeatedly on animation frames at the specified interval, with drift correction.
 
 ```tsx
-import { setFrameInterval } from '@use-raf/skd'
+import { setIntervalFrame } from '@use-raf/skd'
 
-// Basic usage - execute every second
-const cancel = setFrameInterval((timestamp) => {
+// Execute every second
+const cancel = setIntervalFrame((timestamp) => {
   console.log('Tick at', timestamp)
 }, 1000)
 
 // With additional arguments
-setFrameInterval((timestamp, message) => {
+setIntervalFrame((timestamp, message) => {
   console.log(message, timestamp)
 }, 500, 'Update:')
 
@@ -60,21 +76,27 @@ cancel()
 ### Types
 
 ```tsx
-type FrameTimeoutHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
-type FrameIntervalHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
+type FrameHandler = (timestamp: number) => void
+type TimeoutFrameHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
+type IntervalFrameHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
 type Cancel = () => void
 ```
 
-### `setFrameTimeout(handler, delay?, ...args)`
+### `setFrame(callback)`
 
-- `handler: FrameTimeoutHandler<A>` - Callback to execute
+- `callback: FrameHandler` - Callback to execute on next frame
+- **Returns:** `Cancel`
+
+### `setTimeoutFrame(handler, delay?, ...args)`
+
+- `handler: TimeoutFrameHandler<A>` - Callback to execute
 - `delay?: number` - Delay in milliseconds (default: `0`)
 - `...args: A` - Arguments passed to the handler
 - **Returns:** `Cancel`
 
-### `setFrameInterval(handler, delay?, ...args)`
+### `setIntervalFrame(handler, delay?, ...args)`
 
-- `handler: FrameIntervalHandler<A>` - Callback to execute repeatedly
+- `handler: IntervalFrameHandler<A>` - Callback to execute repeatedly
 - `delay?: number` - Interval in milliseconds (default: `0`)
 - `...args: A` - Arguments passed to the handler
 - **Returns:** `Cancel`

@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks/dom'
 import ReactUse from 'react-use'
+import * as ReactUses from '@reactuses/core'
 import * as ShinedUse from '@shined/react-use'
 import type { BenchOptions } from 'vitest'
 import { describe, bench, vi } from 'vitest'
@@ -18,14 +19,19 @@ const useRafLoop = (...[callback, opts]: Parameters<typeof useLoop>): HookContro
   return control
 }
 
+const useShinedRafLoop = (...args: Parameters<typeof ShinedUse.useRafLoop>): HookControl => {
+  const { pause, resume } = ShinedUse.useRafLoop(...args)
+  return { stop: pause, start: resume }
+}
+
 const useReactUseRafLoop = (...args: Parameters<typeof ReactUse.useRafLoop>): HookControl => {
   const [stop, start] = ReactUse.useRafLoop(...args)
   return { stop, start }
 }
 
-const useShinedRafLoop = (...args: Parameters<typeof ShinedUse.useRafLoop>): HookControl => {
-  const { pause, resume } = ShinedUse.useRafLoop(...args)
-  return { stop: pause, start: resume }
+const useReactUsesRafLoop = (...args: Parameters<typeof ReactUses.useRafFn>): HookControl => {
+  const [stop, start] = ReactUses.useRafFn(...args)
+  return { stop, start }
 }
 
 const noop = () => {}
@@ -40,8 +46,9 @@ describe('raf loop hook', () => {
     bench('@use-raf/loop #regress mount cost', () =>
       scenario(() => useRafLoop(noop, { immediate: false })),
     )
-    bench('react-use', () => scenario(() => useReactUseRafLoop(noop, false)))
     bench('@shined/react-use', () => scenario(() => useShinedRafLoop(noop, { immediate: false })))
+    bench('react-use', () => scenario(() => useReactUseRafLoop(noop, false)))
+    bench('@reactuses/core', () => scenario(() => useReactUsesRafLoop(noop, false)))
   })
 
   describe('throughput', () => {
@@ -60,16 +67,18 @@ describe('raf loop hook', () => {
 
     describe('no throttle', () => {
       const raf = renderHook(() => useRafLoop(noop, { immediate: false }))
-      const react = renderHook(() => useReactUseRafLoop(noop, false))
       const shined = renderHook(() => useShinedRafLoop(noop, { immediate: false }))
+      const react = renderHook(() => useReactUseRafLoop(noop, false))
+      const reactuses = renderHook(() => useReactUsesRafLoop(noop, false))
 
       bench(
         '@use-raf/loop #regress throughput no throttle',
         () => scenario(raf.result.current, FRAMES),
         options,
       )
-      bench('react-use', () => scenario(react.result.current, FRAMES), options)
       bench('@shined/react-use', () => scenario(shined.result.current, FRAMES), options)
+      bench('react-use', () => scenario(react.result.current, FRAMES), options)
+      bench('@reactuses/core', () => scenario(reactuses.result.current, FRAMES), options)
     })
 
     describe('throttle', () => {
