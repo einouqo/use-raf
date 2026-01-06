@@ -75,15 +75,27 @@ Benchmarked against `react-use` and `@shined/react-use`. While having heavier (~
 
 ### Benchmark Results
 
-| Test | @use-raf/loop | react-use | @shined/react-use |
-|------|---------------|-----------|-------------------|
-| Mount cost (hz) | 14,962.55 | **17,198.80** | 15,360.92 |
-| No throttle (hz) | **66.32** | 63.66 | 62.90 |
-| 120 FPS throttle (hz) | **63.73** | — | 60.69 |
-| 60 FPS throttle (hz) | **62.73** | — | 62.56 |
-| 30 FPS throttle (hz) | **84.10** | — | 62.51 |
-| 10 FPS throttle (hz) | **200.36** | — | 62.55 |
+| Test | @use-raf/loop | react-use | @shined/react-use | @reactuses/core |
+|------|---------------|-----------|-------------------|------------------|
+| Mount cost (hz) | 14,088.99 | **16,497.18** | 15,469.66 | 16,188.77 |
+| No throttle (hz) | 67.33 | 63.63 | 64.89 | **69.63** |
+| 120 FPS throttle (hz) | **61.71** | — | 61.08 | — |
+| 60 FPS throttle (hz) | **64.78** | — | 60.83 | — |
+| 30 FPS throttle (hz) | **92.21** | — | 61.21 | — |
+| 10 FPS throttle (hz) | **222.08** | — | 61.10 | — |
 
 *Higher hz values indicate better performance. Bold values represent the best result for each test.*
 
 **Hardware:** Apple M2 Max (12 cores @ 3.50 GHz), 32 GB RAM
+
+**Running benchmarks:**
+
+```bash
+bun run bench
+```
+
+**Performance regression tracking:** benchmark results are continuously monitored via [CodSpeed][codecov-link] to detect performance regressions.
+
+<!--links:start-->
+[codecov-link]: https://codecov.io/github/einouqo/use-raf
+<!--links:end-->

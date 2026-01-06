@@ -3,3 +3,5 @@
  * Clears both the pending scheduling function and requestAnimationFrame.
  */
 export type Cancel = () => void
+
+export type Optional<T> = T | undefined

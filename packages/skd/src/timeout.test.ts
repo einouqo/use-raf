@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { setFrameTimeout } from './timeout.func'
+import { setTimeoutFrame } from './timeout.func'
 
 describe('frame timeout', () => {
   beforeEach(() => {
@@ -12,7 +12,7 @@ describe('frame timeout', () => {
 
   it('should call handler after delay', () => {
     const handler = vi.fn()
-    setFrameTimeout(handler, 100)
+    setTimeoutFrame(handler, 100)
 
     vi.advanceTimersByTime(99)
     expect(handler).not.toHaveBeenCalled()
@@ -24,7 +24,7 @@ describe('frame timeout', () => {
 
   it('should call handler immediately with no delay', () => {
     const handler = vi.fn()
-    setFrameTimeout(handler)
+    setTimeoutFrame(handler)
 
     vi.advanceTimersToNextFrame()
     expect(handler).toHaveBeenCalledTimes(1)
@@ -32,7 +32,7 @@ describe('frame timeout', () => {
 
   it('should provide timestamp to handler', () => {
     const handler = vi.fn()
-    setFrameTimeout(handler, 100)
+    setTimeoutFrame(handler, 100)
 
     vi.advanceTimersByTime(100)
     vi.advanceTimersToNextFrame()
@@ -45,7 +45,7 @@ describe('frame timeout', () => {
 
   it('should pass arguments to handler', () => {
     const handler = vi.fn()
-    setFrameTimeout(handler, 50, 'arg1', 42, true)
+    setTimeoutFrame(handler, 50, 'arg1', 42, true)
 
     vi.advanceTimersByTime(50)
     vi.advanceTimersToNextFrame()
@@ -55,7 +55,7 @@ describe('frame timeout', () => {
 
   it('should cancel timeout before execution', () => {
     const handler = vi.fn()
-    const cancel = setFrameTimeout(handler, 100)
+    const cancel = setTimeoutFrame(handler, 100)
 
     vi.advanceTimersByTime(50)
     cancel()
@@ -68,7 +68,7 @@ describe('frame timeout', () => {
 
   it('should cancel animation frame after timeout fires', () => {
     const handler = vi.fn()
-    const cancel = setFrameTimeout(handler, 100)
+    const cancel = setTimeoutFrame(handler, 100)
 
     vi.advanceTimersByTime(100)
     cancel()
@@ -83,9 +83,9 @@ describe('frame timeout', () => {
     const handler2 = vi.fn()
     const handler3 = vi.fn()
 
-    setFrameTimeout(handler1, 50)
-    setFrameTimeout(handler2, 100)
-    setFrameTimeout(handler3, 150)
+    setTimeoutFrame(handler1, 50)
+    setTimeoutFrame(handler2, 100)
+    setTimeoutFrame(handler3, 150)
 
     vi.advanceTimersByTime(50)
     vi.advanceTimersToNextFrame()
@@ -108,9 +108,9 @@ describe('frame timeout', () => {
     const handler2 = vi.fn()
     const handler3 = vi.fn()
 
-    const cancel1 = setFrameTimeout(handler1, 100)
-    setFrameTimeout(handler2, 100)
-    const cancel3 = setFrameTimeout(handler3, 100)
+    const cancel1 = setTimeoutFrame(handler1, 100)
+    setTimeoutFrame(handler2, 100)
+    const cancel3 = setTimeoutFrame(handler3, 100)
 
     cancel1()
     cancel3()
@@ -125,7 +125,7 @@ describe('frame timeout', () => {
 
   it('should handle very long delays', () => {
     const handler = vi.fn()
-    setFrameTimeout(handler, 10_000)
+    setTimeoutFrame(handler, 10_000)
 
     vi.advanceTimersByTime(9_999)
     vi.advanceTimersToNextFrame()
@@ -141,7 +141,7 @@ describe('frame timeout', () => {
       throw new Error('Handler error')
     })
 
-    setFrameTimeout(handler, 50)
+    setTimeoutFrame(handler, 50)
 
     vi.advanceTimersByTime(50)
     expect(() => {
@@ -153,7 +153,7 @@ describe('frame timeout', () => {
 
   it('should execute on next frame after delay', () => {
     const handler = vi.fn()
-    setFrameTimeout(handler, 100)
+    setTimeoutFrame(handler, 100)
 
     vi.advanceTimersByTime(100)
     expect(handler).not.toHaveBeenCalled()

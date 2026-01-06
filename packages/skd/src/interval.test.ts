@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { setFrameInterval } from './interval.func'
+import { setIntervalFrame } from './interval.func'
 
 describe('frame interval', () => {
   beforeEach(() => {
@@ -12,7 +12,7 @@ describe('frame interval', () => {
 
   it('should call handler repeatedly at specified interval', () => {
     const handler = vi.fn()
-    setFrameInterval(handler, 100)
+    setIntervalFrame(handler, 100)
 
     vi.advanceTimersByTime(100)
     vi.advanceTimersToNextFrame()
@@ -29,7 +29,7 @@ describe('frame interval', () => {
 
   it('should call handler immediately with zero delay', () => {
     const handler = vi.fn()
-    setFrameInterval(handler, 0)
+    setIntervalFrame(handler, 0)
 
     vi.advanceTimersToNextFrame()
     expect(handler).toHaveBeenCalledTimes(1)
@@ -40,7 +40,7 @@ describe('frame interval', () => {
 
   it('should provide timestamp to handler', () => {
     const handler = vi.fn()
-    setFrameInterval(handler, 100)
+    setIntervalFrame(handler, 100)
 
     vi.advanceTimersByTime(100)
     vi.advanceTimersToNextFrame()
@@ -53,7 +53,7 @@ describe('frame interval', () => {
 
   it('should pass arguments to handler', () => {
     const handler = vi.fn()
-    setFrameInterval(handler, 100, 'arg1', 42, true)
+    setIntervalFrame(handler, 100, 'arg1', 42, true)
 
     vi.advanceTimersByTime(100)
     vi.advanceTimersToNextFrame()
@@ -69,7 +69,7 @@ describe('frame interval', () => {
 
   it('should cancel interval', () => {
     const handler = vi.fn()
-    const cancel = setFrameInterval(handler, 100)
+    const cancel = setIntervalFrame(handler, 100)
 
     vi.advanceTimersByTime(100)
     vi.advanceTimersToNextFrame()
@@ -84,7 +84,7 @@ describe('frame interval', () => {
 
   it('should be safe to call cancel multiple times', () => {
     const handler = vi.fn()
-    const cancel = setFrameInterval(handler, 100)
+    const cancel = setIntervalFrame(handler, 100)
 
     cancel()
     cancel()
@@ -100,9 +100,9 @@ describe('frame interval', () => {
     const handler2 = vi.fn()
     const handler3 = vi.fn()
 
-    setFrameInterval(handler1, 50)
-    setFrameInterval(handler2, 100)
-    setFrameInterval(handler3, 150)
+    setIntervalFrame(handler1, 50)
+    setIntervalFrame(handler2, 100)
+    setIntervalFrame(handler3, 150)
 
     vi.advanceTimersByTime(50)
     vi.advanceTimersToNextFrame()
@@ -128,9 +128,9 @@ describe('frame interval', () => {
     const handler2 = vi.fn()
     const handler3 = vi.fn()
 
-    const cancel1 = setFrameInterval(handler1, 100)
-    setFrameInterval(handler2, 100)
-    const cancel3 = setFrameInterval(handler3, 100)
+    const cancel1 = setIntervalFrame(handler1, 100)
+    setIntervalFrame(handler2, 100)
+    const cancel3 = setIntervalFrame(handler3, 100)
 
     cancel1()
     cancel3()
@@ -153,7 +153,7 @@ describe('frame interval', () => {
       throw new Error('Handler error')
     })
 
-    setFrameInterval(handler)
+    setIntervalFrame(handler)
 
     for (let i = 0; i < 2; i++) {
       expect(() => {
@@ -166,17 +166,19 @@ describe('frame interval', () => {
 
   it('should maintain accurate intervals over time', () => {
     const handler = vi.fn()
-    setFrameInterval(handler, 100)
+    const delay = 100
+    const ticks = 10
+    setIntervalFrame(handler, delay)
 
-    vi.advanceTimersByTime(1000)
+    vi.advanceTimersByTime(ticks * delay)
     vi.advanceTimersToNextFrame()
 
-    expect(handler).toHaveBeenCalledTimes(10)
+    expect(handler).toHaveBeenCalledTimes(ticks)
   })
 
   it('should execute on next frame after interval', () => {
     const handler = vi.fn()
-    setFrameInterval(handler, 100)
+    setIntervalFrame(handler, 100)
 
     vi.advanceTimersByTime(100)
     expect(handler).not.toHaveBeenCalled()

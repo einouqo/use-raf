@@ -1,6 +1,6 @@
 import type { RafLoopCallback } from '@use-raf/loop'
 import { useRafLoop } from '@use-raf/loop'
-import { setFrameTimeout } from '@use-raf/skd'
+import { setTimeoutFrame } from '@use-raf/skd'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export interface RafTimerProps {
@@ -139,7 +139,7 @@ export const useRafTimer = ({
     }
 
     const left = duration - elapsedRef.current
-    const cancel = setFrameTimeout((timestamp) => {
+    const cancel = setTimeoutFrame((timestamp) => {
       const last = frameTimestamp.current || timestamp
       const delta = timestamp - last
       onFrame(timestamp, delta)

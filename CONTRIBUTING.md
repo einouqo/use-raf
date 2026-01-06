@@ -9,7 +9,6 @@ Thank you for your interest in contributing 🙏
 ```bash
 gh repo fork einouqo/use-raf --clone
 cd use-raf
-bun i
 ```
 
 ### 2. Create a Branch
@@ -43,7 +42,13 @@ Install [direnv](https://direnv.net/) to automatically activate the environment 
 direnv allow
 ```
 
-Write your code and ensure it follows the project standards.
+After the envirtonment is ready, install dependencies using `bun`:
+
+```bash
+bun i
+```
+
+That's it, you're all set.
 
 ### 4. Commit Your Changes
 

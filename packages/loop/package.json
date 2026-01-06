@@ -43,7 +43,11 @@
   "peerDependencies": {
     "react": ">=16.14"
   },
+  "dependencies": {
+    "@use-raf/skd": "workspace:*"
+  },
   "devDependencies": {
+    "@reactuses/core": "^6.1.8",
     "@shined/react-use": "^1.13.1",
     "react-use": "^17.6.0"
   },
