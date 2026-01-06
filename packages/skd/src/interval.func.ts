@@ -7,7 +7,7 @@ import type { Cancel, Optional } from './types'
  *
  * @template A - Tuple type for additional arguments
  * @param timestamp - The DOMHighResTimeStamp from requestAnimationFrame
- * @param args - Additional arguments passed to setFrameInterval
+ * @param args - Additional arguments passed to setIntervalFrame
  */
 export type IntervalFrameHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
 
@@ -45,6 +45,10 @@ export const setIntervalFrame = <A extends unknown[] = []>(
   delay: number = 0,
   ...args: A
 ): Cancel => {
+  // NOTE: use AnimationTimeline's currentTime property when available for elapsed time
+  // calculation, since for Window objects the requestAnimationFrame callback
+  // timestamp is "equal to document.timeline.currentTime" according to MDN documentation.
+  // Source: https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame#timestamp
   const started =
     (document?.timeline?.currentTime as number | undefined | null) ?? performance.now()
 

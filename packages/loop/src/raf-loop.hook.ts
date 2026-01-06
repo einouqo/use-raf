@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef } from 'react'
 /**
  * Callback function that receives the current timestamp and delta time.
  *
- * @param timestamp - The current time in milliseconds DOMHighResTimeStamp from requestAnimationFrame
+ * @param timestamp - The DOMHighResTimeStamp in milliseconds from requestAnimationFrame
  * @param delta - Time elapsed in milliseconds since the last callback invocation
  */
 export type RafLoopCallback = (timestamp: number, delta: number) => void

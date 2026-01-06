@@ -42,7 +42,7 @@ Install [direnv](https://direnv.net/) to automatically activate the environment 
 direnv allow
 ```
 
-After the envirtonment is ready, install dependencies using `bun`:
+After the environment is ready, install dependencies using `bun`:
 
 ```bash
 bun i

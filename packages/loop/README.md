@@ -94,8 +94,8 @@ Benchmarked against `react-use` and `@shined/react-use`. While having heavier (~
 bun run bench
 ```
 
-**Performance regression tracking:** benchmark results are continuously monitored via [CodSpeed][codecov-link] to detect performance regressions.
+**Performance regression tracking:** benchmark results are continuously monitored via [CodSpeed][codspeed-link] to detect performance regressions.
 
 <!--links:start-->
-[codecov-link]: https://codecov.io/github/einouqo/use-raf
+[codspeed-link]: https://codspeed.io/einouqo/use-raf
 <!--links:end-->

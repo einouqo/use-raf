@@ -6,7 +6,7 @@ import type { Cancel, Optional } from './types'
  *
  * @template A - Tuple type for additional arguments
  * @param timestamp - The DOMHighResTimeStamp from requestAnimationFrame
- * @param args - Additional arguments passed to setFrameTimeout
+ * @param args - Additional arguments passed to setTimeoutFrame
  */
 export type TimeoutFrameHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
 
