@@ -33,19 +33,16 @@
         "react": ">=16.14",
       },
     },
-    "packages/timeout": {
-      "name": "@use-raf/timeout",
+    "packages/skd": {
+      "name": "@use-raf/skd",
       "version": "0.0.1",
-      "peerDependencies": {
-        "react": ">=16.14",
-      },
     },
     "packages/timer": {
       "name": "@use-raf/timer",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "dependencies": {
         "@use-raf/loop": "workspace:*",
-        "@use-raf/timeout": "workspace:*",
+        "@use-raf/skd": "workspace:*",
       },
       "peerDependencies": {
         "react": ">=16.14",
@@ -279,7 +276,7 @@
 
     "@use-raf/loop": ["@use-raf/loop@workspace:packages/loop"],
 
-    "@use-raf/timeout": ["@use-raf/timeout@workspace:packages/timeout"],
+    "@use-raf/skd": ["@use-raf/skd@workspace:packages/skd"],
 
     "@use-raf/timer": ["@use-raf/timer@workspace:packages/timer"],
 

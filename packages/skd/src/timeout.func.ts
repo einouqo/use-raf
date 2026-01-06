@@ -1,3 +1,5 @@
+import type { Cancel } from './types'
+
 /**
  * Handler function called on the next animation frame after the specified delay.
  *
@@ -6,12 +8,6 @@
  * @param args - Additional arguments passed to setFrameTimeout
  */
 export type FrameTimeoutHandler<A extends unknown[] = []> = (timestamp: number, ...args: A) => void
-
-/**
- * Function to cancel a scheduled frame timeout.
- * Clears both the pending setTimeout and requestAnimationFrame.
- */
-export type CancelFunc = () => void
 
 /**
  * Schedules a handler to be called on the next animation frame after a specified delay.
@@ -48,7 +44,7 @@ export const setFrameTimeout = <A extends unknown[] = []>(
   handler: FrameTimeoutHandler<A>,
   delay?: number,
   ...args: A
-): CancelFunc => {
+): Cancel => {
   let frame: number | undefined
   const timeout = setTimeout(
     (...args: A) => {

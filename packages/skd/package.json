@@ -1,7 +1,7 @@
 {
-  "name": "@use-raf/timeout",
+  "name": "@use-raf/skd",
   "version": "0.0.1",
-  "description": "Schedule callbacks to execute on the next animation frame after a specified delay",
+  "description": "Schedule callbacks to execute on animation frame",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -9,12 +9,14 @@
     ".": "./src/index.ts"
   },
   "publishConfig": {
-    "main": "./dist/index.js",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {
       ".": {
         "types": "./dist/index.d.ts",
-        "import": "./dist/index.js"
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
       }
     }
   },
@@ -24,12 +26,11 @@
   ],
   "sideEffects": false,
   "keywords": [
-    "react",
-    "hook",
     "requestAnimationFrame",
     "raf",
     "animation",
-    "timeout"
+    "timeout",
+    "interval"
   ],
   "scripts": {
     "build": "tsup",
@@ -37,9 +38,6 @@
     "test:watch": "vitest",
     "lint": "biome check",
     "lint:fix": "biome check --write"
-  },
-  "peerDependencies": {
-    "react": ">=16.14"
   },
   "author": "einouqo",
   "repository": {
