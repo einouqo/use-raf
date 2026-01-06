@@ -1,3 +1,4 @@
+import type { FrameTimeoutHandler } from './timeout.func'
 import { setFrameTimeout } from './timeout.func'
 import type { Cancel } from './types'
 
@@ -47,25 +48,19 @@ export const setFrameInterval = <A extends unknown[] = []>(
   const started = performance.now()
 
   const cancel = { current: undefined as Cancel | undefined }
-  const schedule = (at: number): Cancel => {
-    const elapsed = at - started
+  const tick: FrameTimeoutHandler<A> = (timestamp, ...args) => {
+    const elapsed = timestamp - started
     const drift = delay > 0 ? elapsed % delay : 0
     const after = delay - drift
 
-    return setFrameTimeout(
-      (timestamp, ...args) => {
-        try {
-          handler(timestamp, ...args)
-        } finally {
-          cancel.current = schedule(timestamp)
-        }
-      },
-      after,
-      ...args,
-    )
+    try {
+      handler(timestamp, ...args)
+    } finally {
+      cancel.current = setFrameTimeout(tick, after, ...args)
+    }
   }
 
-  cancel.current = schedule(started)
+  cancel.current = setFrameTimeout(tick, delay, ...args)
 
   return () => cancel.current?.()
 }
