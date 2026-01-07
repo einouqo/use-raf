@@ -8,6 +8,12 @@
 
 A hook collection built over the [requestAnimationFrame window API][mdn-window-raf]
 
+- React Hooks:
+  - [useRafLoop](./packages/loop/) - controlled, frame-synchronized repetitive callback execution.
+  - [useRafTimer](./packages/timer/) - controlled, frame-synchronized timer / countdown.
+  - [useRafState](./packages/state/) - reactive state which updates on next repaint (`requestAnimationFrame`)
+- [Utilities](./packages/skd/) - frame-synchronized replacement for `setTimeout` and `setInterval` window's methods
+
 <!--links:start-->
 [codecov-badge]: https://codecov.io/github/einouqo/use-raf/graph/badge.svg?token=GGLR5U3RXO
 [codecov-link]: https://codecov.io/github/einouqo/use-raf

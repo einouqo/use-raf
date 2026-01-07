@@ -1,0 +1,64 @@
+{
+  "name": "@use-raf/state",
+  "version": "0.0.1",
+  "description": "React frame-synchronized state hook",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "keywords": [
+    "react",
+    "hook",
+    "state",
+    "useState",
+    "requestAnimationFrame",
+    "raf",
+    "frame",
+    "animation",
+    "schedule"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "bench": "vitest bench --run --no-file-parallelism --sequence.shuffle",
+    "bench:watch": "vitest bench --no-file-parallelism --sequence.shuffle",
+    "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism"
+  },
+  "peerDependencies": {
+    "react": ">=16.14"
+  },
+  "dependencies": {
+    "@use-raf/skd": "workspace:*"
+  },
+  "devDependencies": {
+    "@reactuses/core": "^6.1.8",
+    "@shined/react-use": "^1.13.1",
+    "react-use": "^17.6.0"
+  },
+  "author": "einouqo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/einouqo/use-raf"
+  },
+  "license": "MIT"
+}
