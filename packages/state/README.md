@@ -80,8 +80,8 @@ flowchart LR
     F2 --> F3["..."]
     F3 --> RP1["Repaint (state = 1)"]
     RP1 --> F4["..."]
-    F4 --> F5["setState(v =&gt; v + 1)"]
-    F5 --> F6["setState(v =&gt; v + 1)"]
+    F4 --> F5["setState(v => v + 1)"]
+    F5 --> F6["setState(v => v + 1)"]
     F6 --> F7["..."]
     F7 --> RP2["Repaint (state = 3)"]
     RP2 --> F8["..."]
@@ -107,23 +107,23 @@ flowchart LR
 | Package | Result |
 |---------|--------|
 | `@use-raf/state` | ✅ `3` |
-| `@shined/react-use` | ❌ `1` |
-| `react-use` | ❌ `1` |
-| `@reactuses/core` | ❌ `1` |
+| `@shined/react-use` | ❌ `2` |
+| `react-use` | ❌ `2` |
+| `@reactuses/core` | ❌ `2` |
 
 ## Performance
 
-Benchmarked against similar hooks from popular libraries. While `react-use` leads in all scenarios, `@use-raf/state` remains competitive with both the best-performing `react-use` and `@shined/react-use`, slightly outperforming the latter across throughput tests.
+Benchmarked against similar hooks from popular libraries. While `react-use` leads in all scenarios, `@use-raf/state` remains competitive with both the best-performing `react-use` and `@shined/react-use`, having similar results with the last one across throughput tests.
 
 ### Benchmark Results
 
 | Test | @use-raf/state | react-use | @shined/react-use | @reactuses/core |
 |------|----------------|-----------|-------------------|-----------------|
-| Mount cost (hz) | 14,694.06 | **16,423.23** | 15,427.73 | 16,121.82 |
-| Single update/frame (hz) | 168.83 | **174.01** | 154.90 | 48.59 |
-| Batched updates (hz) | 480.80 | **516.77** | 499.28 | 282.33 |
-| Updater functions (hz) | 164.54 | **170.44** | 148.11 | 48.31 |
-| Complex state (hz) | 274.43 | **283.95** | 252.28 | 93.99 |
+| Mount cost (hz) | 16,092.44 | **17,850.62** | 16,330.88 | 17,411.35 |
+| Single update/frame (hz) | 158.50 | **192.33** | 166.33 | 53.28 |
+| Batched updates (hz) | 541.59 | **566.57** | 515.62 | 323.48 |
+| Updater functions (hz) | 170.13 | **196.69** | 172.77 | 52.55 |
+| Complex state (hz) | 272.92 | **315.56** | 274.91 | 100.91 |
 
 *Higher hz values indicate better performance. Bold values represent the best result for each test.*
 
