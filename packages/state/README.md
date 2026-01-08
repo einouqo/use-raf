@@ -57,7 +57,7 @@ const Demo = () => {
 
 - `[state, setState]` - Current state and setter function (identical to `useState` API)
 
-**Note:** When multiple updater functions are called between frames (e.g., `setState(prev => prev + 1)` three times), `@use-raf/state` correctly chains them, resulting in `3`, while other implementations (`@shined/react-use`, `react-use`, `@reactuses/core`) only apply the last update, resulting in `1`. See [the trial test case](./src/state.test.ts:#L367-L410):
+**Note:** When multiple updater functions are called between frames (e.g., `setState(prev => prev + 1)` three times), `@use-raf/state` correctly chains them, resulting in `3`, while other implementations (`@shined/react-use`, `react-use`, `@reactuses/core`) only apply the last update, resulting in `1`. See [the trial test case](./src/state.test.ts#L367-L410):
 
 ```bash
 bun run test:trial
