@@ -40,6 +40,7 @@
     "lint:fix": "biome check --write",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:trial": "TRIAL=true vitest run",
     "bench": "vitest bench --run --no-file-parallelism --sequence.shuffle",
     "bench:watch": "vitest bench --no-file-parallelism --sequence.shuffle",
     "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism"

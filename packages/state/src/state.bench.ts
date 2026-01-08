@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks/dom'
-import ReactUse from 'react-use'
+import * as ReactUse from 'react-use'
 import * as ReactUses from '@reactuses/core'
 import * as ShinedUse from '@shined/react-use'
 import type { BenchOptions } from 'vitest'

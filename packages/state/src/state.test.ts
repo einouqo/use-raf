@@ -1,8 +1,13 @@
 import { renderHook, act } from '@testing-library/react-hooks/dom'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import * as ReactUse from 'react-use'
+import * as ReactUses from '@reactuses/core'
+import * as ShinedUse from '@shined/react-use'
 import { useRafState } from './state.hook'
 
-describe('useRafState', () => {
+const isTrial = process.env.TRIAL === 'true'
+
+describe.runIf(!isTrial)('raf state hook', () => {
   beforeEach(() => {
     vi.useFakeTimers()
   })
@@ -142,9 +147,7 @@ describe('useRafState', () => {
         vi.advanceTimersToNextFrame()
       })
 
-      // Last updater function should receive the initial state
-      // because frames were cancelled and only the last one executes
-      expect(result.current[0]).toBe(1)
+      expect(result.current[0]).toBe(3)
     })
 
     it('should handle sequential frame updates', () => {
@@ -357,6 +360,51 @@ describe('useRafState', () => {
       })
 
       expect(result.current[0]).toBe(newFn)
+    })
+  })
+})
+
+describe.runIf(isTrial)('raf state trial', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  describe('batching updater functions in-between two frames', () => {
+    it.for([
+      {
+        name: '@use-raf/state',
+        hook: useRafState,
+      },
+      {
+        name: '@shined/react-use',
+        hook: ShinedUse.useRafState,
+      },
+      {
+        name: 'react-use',
+        hook: ReactUse.useRafState,
+      },
+      {
+        name: '@reactuses/core',
+        hook: ReactUses.useRafState,
+      },
+    ])('$name', ({ hook }) => {
+      const { result } = renderHook(() => hook(0))
+
+      act(() => {
+        result.current[1]((prev) => prev + 1)
+        result.current[1]((prev) => prev + 1)
+        result.current[1]((prev) => prev + 1)
+      })
+
+      act(() => {
+        vi.advanceTimersToNextFrame()
+      })
+
+      expect(result.current[0]).toBe(3)
     })
   })
 })

@@ -57,6 +57,60 @@ const Demo = () => {
 
 - `[state, setState]` - Current state and setter function (identical to `useState` API)
 
+**Note:** When multiple updater functions are called between frames (e.g., `setState(prev => prev + 1)` three times), `@use-raf/state` correctly chains them, resulting in `3`, while other implementations (`@shined/react-use`, `react-use`, `@reactuses/core`) only apply the last update, resulting in `1`. See [the trial test case](./src/state.test.ts:#L367-L410):
+
+```bash
+bun run test:trial
+```
+
+Another example illustrating this behavior:
+
+```ts
+const [count, setCount] = useRafState(0)
+
+const double = useCallback(() => {
+  setCount(v => v + 1)
+  setCount(v => v + 1)
+}, [])
+```
+
+```mermaid
+flowchart LR
+    F1["..."] --> F2["setState(1)"]
+    F2 --> F3["..."]
+    F3 --> RP1["Repaint (state = 1)"]
+    RP1 --> F4["..."]
+    F4 --> F5["setState(v =&gt; v + 1)"]
+    F5 --> F6["setState(v =&gt; v + 1)"]
+    F6 --> F7["..."]
+    F7 --> RP2["Repaint (state = 3)"]
+    RP2 --> F8["..."]
+
+    subgraph DoubleCallback["double callback"]
+        F5
+        F6
+    end
+
+    style F1 fill:#cccccc,stroke:#888,stroke-width:2px,color:#000
+    style F2 fill:#cccccc,stroke:#888,stroke-width:2px,color:#000
+    style F3 fill:#cccccc,stroke:#888,stroke-width:2px,color:#000
+    style RP1 fill:#4A90E2,stroke:#07c,stroke-width:3px,color:#fff
+    style F4 fill:#cccccc,stroke:#888,stroke-width:2px,color:#000
+    style F5 fill:#cccccc,stroke:#888,stroke-width:2px,color:#000
+    style F6 fill:#cccccc,stroke:#888,stroke-width:2px,color:#000
+    style F7 fill:#cccccc,stroke:#888,stroke-width:2px,color:#000
+    style RP2 fill:#4A90E2,stroke:#07c,stroke-width:3px,color:#fff
+    style F8 fill:#cccccc,stroke:#888,stroke-width:2px,color:#000
+    style DoubleCallback fill:#9B8CF5,stroke:#6C5CDC,stroke-width:3px,color:#fff
+```
+
+| Package | Result |
+|---------|--------|
+| `@use-raf/state` | ✅ `3` |
+| `@shined/react-use` | ❌ `1` |
+| `react-use` | ❌ `1` |
+| `@reactuses/core` | ❌ `1` |
+
 ## Performance
 
 Benchmarked against similar hooks from popular libraries. While `react-use` leads in all scenarios, `@use-raf/state` remains competitive with both the best-performing `react-use` and `@shined/react-use`, slightly outperforming the latter across throughput tests.
