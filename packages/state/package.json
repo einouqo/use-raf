@@ -43,7 +43,8 @@
     "test:trial": "TRIAL=true vitest run",
     "bench": "vitest bench --run --no-file-parallelism --sequence.shuffle",
     "bench:watch": "vitest bench --no-file-parallelism --sequence.shuffle",
-    "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism"
+    "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism",
+    "publish": "bun publish --access public --tolerate-republish"
   },
   "peerDependencies": {
     "react": ">=16.14"
@@ -59,7 +60,11 @@
   "author": "einouqo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/einouqo/use-raf"
+    "url": "https://github.com/einouqo/use-raf",
+    "directory": "packages/state"
+  },
+  "bugs": {
+    "url": "https://github.com/einouqo/use-raf/issues"
   },
   "license": "MIT"
 }

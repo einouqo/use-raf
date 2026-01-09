@@ -37,12 +37,17 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome check",
-    "lint:fix": "biome check --write"
+    "lint:fix": "biome check --write",
+    "publish": "bun publish --access public --tolerate-republish"
   },
   "author": "einouqo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/einouqo/use-raf"
+    "url": "https://github.com/einouqo/use-raf",
+    "directory": "packages/skd"
+  },
+  "bugs": {
+    "url": "https://github.com/einouqo/use-raf/issues"
   },
   "license": "MIT"
 }

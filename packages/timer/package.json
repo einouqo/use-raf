@@ -41,7 +41,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome check",
-    "lint:fix": "biome check --write"
+    "lint:fix": "biome check --write",
+    "publish": "bun publish --access public --tolerate-republish"
   },
   "peerDependencies": {
     "react": ">=16.14"
@@ -53,7 +54,11 @@
   "author": "einouqo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/einouqo/use-raf"
+    "url": "https://github.com/einouqo/use-raf",
+    "directory": "packages/timer"
+  },
+  "bugs": {
+    "url": "https://github.com/einouqo/use-raf/issues"
   },
   "license": "MIT"
 }
