@@ -12,7 +12,8 @@
       "dependsOn": []
     },
     "publish": {
-      "dependsOn": ["build", "^publish"]
+      "dependsOn": ["build", "^publish"],
+      "cache": false
     }
   }
 }
