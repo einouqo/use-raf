@@ -10,6 +10,10 @@
     },
     "test": {
       "dependsOn": []
+    },
+    "publish": {
+      "dependsOn": ["build", "^publish"],
+      "cache": false
     }
   }
 }

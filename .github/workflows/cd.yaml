@@ -64,8 +64,21 @@ jobs:
         with:
           mode: simulation
           run: devenv shell bun run ci:codspeed:regress
-  # TODO: npm publishing stub
-  # publish:
-  #   runs-on: ubuntu-latest
-  #   needs: [ verify, regress, coverage ]
-  #   environment: production
+  publish:
+    runs-on: ubuntu-latest
+    needs: [verify, regress, test]
+    permissions:
+      contents: read
+      id-token: write
+    environment: production
+    steps:
+      - uses: actions/checkout@v6
+      - name: setup environment
+        uses: ./.github/actions/setup-devenv
+      - name: use bun cache
+        uses: ./.github/actions/use-bun-cache
+      - name: publish packages
+        shell: devenv shell bash -- -e {0}
+        run: |
+          bun i
+          bun run publish
