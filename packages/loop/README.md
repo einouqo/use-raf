@@ -1,6 +1,6 @@
 # @use-raf/loop
 
-A React hook for creating controlled, frame-rate customizable `requestAnimationFrame` loops.
+A React hook for creating controlled, frame-synchronized customizable `requestAnimationFrame` loops.
 
 ## Installation
 
