@@ -14,7 +14,7 @@ jobs:
       - name: run lint
         shell: devenv shell bash -- -e {0}
         run: |
-          pnpm i
+          pnpm i --frozen-lockfile
           pnpm --filter @use-raf/state lint
   test:
     runs-on: ubuntu-latest
@@ -29,7 +29,7 @@ jobs:
       - name: run test
         shell: devenv shell bash -- -e {0}
         run: |
-          pnpm i
+          pnpm i --frozen-lockfile
           pnpm --filter @use-raf/state test
   bench:
     runs-on: ubuntu-latest
@@ -45,7 +45,7 @@ jobs:
       - name: run bench
         shell: devenv shell bash -- -e {0}
         run: |
-          pnpm i
+          pnpm i --frozen-lockfile
           pnpm --filter @use-raf/state bench
   codspeed:
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
         uses: ./.github/actions/use-pnpm-cache
       - name: node modules
         shell: bash
-        run: devenv shell pnpm i
+        run: devenv shell pnpm i --frozen-lockfile
       - name: bench
         uses: CodSpeedHQ/action@v4
         with:

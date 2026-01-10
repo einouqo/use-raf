@@ -17,7 +17,7 @@ jobs:
       - name: run verify
         shell: devenv shell bash -- -e {0}
         run: |
-          pnpm i
+          pnpm i --frozen-lockfile
           pnpm verify
   test:
     runs-on: ubuntu-latest
@@ -33,7 +33,7 @@ jobs:
       - name: run tests
         shell: devenv shell bash -- -e {0}
         run: |
-          pnpm i
+          pnpm i --frozen-lockfile
           pnpm ci:codecov:test
       - name: upload coverage
         uses: codecov/codecov-action@v5
@@ -58,7 +58,7 @@ jobs:
         uses: ./.github/actions/use-pnpm-cache
       - name: node modules
         shell: bash
-        run: devenv shell pnpm i
+        run: devenv shell pnpm i --frozen-lockfile
       - name: bench
         uses: CodSpeedHQ/action@v4
         with:
@@ -80,5 +80,5 @@ jobs:
       - name: publish packages
         shell: devenv shell bash -- -e {0}
         run: |
-          pnpm i
+          pnpm i --frozen-lockfile
           pnpm publish

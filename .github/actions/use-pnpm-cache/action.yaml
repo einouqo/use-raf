@@ -15,4 +15,4 @@ runs:
     - name: check cache
       if: steps.pnpm-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: devenv shell pnpm install
+      run: devenv shell pnpm i --frozen-lockfile
