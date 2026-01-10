@@ -15,7 +15,7 @@ jobs:
         shell: devenv shell bash -- -e {0}
         run: |
           pnpm i --frozen-lockfile
-          pnpm --filter @use-raf/loop lint
+          pnpm --filter @use-raf/loop run lint
   test:
     runs-on: ubuntu-latest
     permissions:
@@ -30,7 +30,7 @@ jobs:
         shell: devenv shell bash -- -e {0}
         run: |
           pnpm i --frozen-lockfile
-          pnpm --filter @use-raf/loop test
+          pnpm --filter @use-raf/loop run test
   bench:
     runs-on: ubuntu-latest
     needs: [ test ]
@@ -46,7 +46,7 @@ jobs:
         shell: devenv shell bash -- -e {0}
         run: |
           pnpm i --frozen-lockfile
-          pnpm --filter @use-raf/loop bench
+          pnpm --filter @use-raf/loop run bench
   codspeed:
     runs-on: ubuntu-latest
     needs: [ test ]
@@ -66,4 +66,4 @@ jobs:
         uses: CodSpeedHQ/action@v4
         with:
           mode: simulation
-          run: devenv shell pnpm --filter @use-raf/loop bench:regress
+          run: devenv shell pnpm --filter @use-raf/loop run bench:regress

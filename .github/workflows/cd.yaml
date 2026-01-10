@@ -18,7 +18,7 @@ jobs:
         shell: devenv shell bash -- -e {0}
         run: |
           pnpm i --frozen-lockfile
-          pnpm verify
+          pnpm run verify
   test:
     runs-on: ubuntu-latest
     needs: [ verify ]
@@ -34,7 +34,7 @@ jobs:
         shell: devenv shell bash -- -e {0}
         run: |
           pnpm i --frozen-lockfile
-          pnpm ci:codecov:test
+          pnpm run ci:codecov:test
       - name: upload coverage
         uses: codecov/codecov-action@v5
         with:
@@ -63,7 +63,7 @@ jobs:
         uses: CodSpeedHQ/action@v4
         with:
           mode: simulation
-          run: devenv shell pnpm ci:codspeed:regress
+          run: devenv shell pnpm run ci:codspeed:regress
   publish:
     runs-on: ubuntu-latest
     needs: [verify, regress, test]
@@ -81,4 +81,4 @@ jobs:
         shell: devenv shell bash -- -e {0}
         run: |
           pnpm i --frozen-lockfile
-          pnpm publish
+          pnpm run publish
