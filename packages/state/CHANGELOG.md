@@ -1,5 +1,13 @@
 # @use-raf/state
 
+## 0.0.3
+
+### Patch Changes
+
+- a2534a0: Migrate from `bun` to `pnpm` package manager
+- Updated dependencies [a2534a0]
+  - @use-raf/skd@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes

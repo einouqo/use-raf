@@ -1,6 +1,6 @@
 {
   "name": "@use-raf/skd",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Schedule callbacks to execute on animation frame",
   "type": "module",
   "main": "./src/index.ts",
