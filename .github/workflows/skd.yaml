@@ -9,13 +9,13 @@ jobs:
       - uses: actions/checkout@v6
       - name: setup environment
         uses: ./.github/actions/setup-devenv
-      - name: use bun cache
-        uses: ./.github/actions/use-bun-cache
+      - name: use pnpm cache
+        uses: ./.github/actions/use-pnpm-cache
       - name: run lint
         shell: devenv shell bash -- -e {0}
         run: |
-          bun i
-          bun run --filter @use-raf/skd lint
+          pnpm i --frozen-lockfile
+          pnpm --filter @use-raf/skd lint
   test:
     runs-on: ubuntu-latest
     permissions:
@@ -24,10 +24,10 @@ jobs:
       - uses: actions/checkout@v6
       - name: setup environment
         uses: ./.github/actions/setup-devenv
-      - name: use bun cache
-        uses: ./.github/actions/use-bun-cache
+      - name: use pnpm cache
+        uses: ./.github/actions/use-pnpm-cache
       - name: run test
         shell: devenv shell bash -- -e {0}
         run: |
-          bun i
-          bun run --filter @use-raf/skd test
+          pnpm i --frozen-lockfile
+          pnpm --filter @use-raf/skd test

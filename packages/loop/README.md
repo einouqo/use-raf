@@ -91,7 +91,7 @@ Benchmarked against `react-use` and `@shined/react-use`. While having heavier (~
 **Running benchmarks:**
 
 ```bash
-bun run bench
+pnpm bench
 ```
 
 **Performance regression tracking:** benchmark results are continuously monitored via [CodSpeed][codspeed-link] to detect performance regressions.

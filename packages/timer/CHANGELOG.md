@@ -1,5 +1,14 @@
 # @use-raf/timer
 
+## 0.0.4
+
+### Patch Changes
+
+- a2534a0: Migrate from `bun` to `pnpm` package manager
+- Updated dependencies [a2534a0]
+  - @use-raf/loop@0.0.3
+  - @use-raf/skd@0.0.3
+
 ## 0.0.3
 
 ### Patch Changes

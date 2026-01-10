@@ -1,4 +1,5 @@
 name: setup devenv
+description: prepares devenv with cachix
 runs:
   using: "composite"
   steps:

@@ -42,10 +42,10 @@ Install [direnv](https://direnv.net/) to automatically activate the environment 
 direnv allow
 ```
 
-After the environment is ready, install dependencies using `bun`:
+devenv automatically installs dependencies on shell activation. If it doesn't happen or you use an alternative environment setup, run the following command to install them manually:
 
 ```bash
-bun i
+pnpm i
 ```
 
 That's it, you're all set.
@@ -55,7 +55,7 @@ That's it, you're all set.
 This project uses [Changesets][changesets] for changelog generation and package publishing. If your changes affect any packages, create a changeset:
 
 ```bash
-bun changeset
+pnpm changeset
 ```
 
 Follow the prompts to document your changes. The changeset file will be committed with your code.
@@ -81,7 +81,7 @@ gh pr create
 
 Git hooks (via Husky) will automatically:
 
-- **pre-commit** — Run linting and tests (`bun run verify`)
+- **pre-commit** — Run linting and tests (`pnpm verify`)
 - **commit-msg** — Validate conventional commit format
 
 <!--links:start-->
