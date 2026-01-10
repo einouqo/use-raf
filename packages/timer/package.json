@@ -1,6 +1,6 @@
 {
   "name": "@use-raf/timer",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React frame-synchronized timer hook",
   "type": "module",
   "main": "./src/index.ts",
@@ -41,8 +41,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome check",
-    "lint:fix": "biome check --write",
-    "publish": "bun publish --access public --tolerate-republish"
+    "lint:fix": "biome check --write"
   },
   "peerDependencies": {
     "react": ">=16.14"

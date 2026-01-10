@@ -1,6 +1,6 @@
 {
   "name": "@use-raf/state",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "React frame-synchronized state hook",
   "type": "module",
   "main": "./src/index.ts",
@@ -43,8 +43,7 @@
     "test:trial": "TRIAL=true vitest run",
     "bench": "vitest bench --run --no-file-parallelism --sequence.shuffle",
     "bench:watch": "vitest bench --no-file-parallelism --sequence.shuffle",
-    "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism",
-    "publish": "bun publish --access public --tolerate-republish"
+    "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism"
   },
   "peerDependencies": {
     "react": ">=16.14"

@@ -50,9 +50,19 @@ bun i
 
 That's it, you're all set.
 
-### 4. Commit Your Changes
+### 4. Document Your Changes
 
-Follow [Conventional Commits][convent-commits] format:
+This project uses [Changesets][changesets] for changelog generation and package publishing. If your changes affect any packages, create a changeset:
+
+```bash
+bun changeset
+```
+
+Follow the prompts to document your changes. The changeset file will be committed with your code.
+
+### 5. Commit Your Changes
+
+Follow [Conventional Commits][conv-commits] format:
 
 ```bash
 git commit -m "feat: add new feature"
@@ -60,7 +70,7 @@ git commit -m "fix: resolve timer bug"
 git commit -m "docs: update readme"
 ```
 
-### 5. Push and Create a PR
+### 6. Push and Create a PR
 
 ```bash
 git push origin feature/your-feature-name
@@ -75,5 +85,6 @@ Git hooks (via Husky) will automatically:
 - **commit-msg** — Validate conventional commit format
 
 <!--links:start-->
-[convent-commits]: https://www.conventionalcommits.org/en/v1.0.0/
+[changesets]: https://github.com/changesets/changesets
+[conv-commits]: https://www.conventionalcommits.org/en/v1.0.0/
 <!--links:end-->

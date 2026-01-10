@@ -1,6 +1,6 @@
 {
   "name": "@use-raf/skd",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Schedule callbacks to execute on animation frame",
   "type": "module",
   "main": "./src/index.ts",
@@ -37,8 +37,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome check",
-    "lint:fix": "biome check --write",
-    "publish": "bun publish --access public --tolerate-republish"
+    "lint:fix": "biome check --write"
   },
   "author": "einouqo",
   "repository": {
