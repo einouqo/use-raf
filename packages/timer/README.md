@@ -1,6 +1,23 @@
 # @use-raf/timer
 
+[![npm-version-badge]][npm-link]
+[![npm-downloads-badge]][npm-link]
+[![bundle-size-badge]][bundlephobia-link]
+[![types-badge]][npm-link]
+[![license-badge]][license-link]
+
 A React hook for creating frame-synchronized timers using `requestAnimationFrame`.
+
+<!--links:start-->
+[npm-version-badge]: https://img.shields.io/npm/v/@use-raf/timer.svg
+[npm-downloads-badge]: https://img.shields.io/npm/dm/@use-raf/timer.svg
+[bundle-size-badge]: https://img.shields.io/bundlephobia/minzip/@use-raf/timer
+[bundlephobia-link]: https://bundlephobia.com/package/@use-raf/timer
+[types-badge]: https://img.shields.io/npm/types/@use-raf/timer
+[npm-link]: https://www.npmjs.com/package/@use-raf/timer
+[license-badge]: https://img.shields.io/npm/l/@use-raf/timer.svg
+[license-link]: https://github.com/einouqo/use-raf/blob/main/LICENSE
+<!--links:end-->
 
 ## Installation
 

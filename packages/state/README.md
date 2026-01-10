@@ -1,6 +1,24 @@
 # @use-raf/state
 
+[![npm-version-badge]][npm-link]
+[![npm-downloads-badge]][npm-link]
+[![bundle-size-badge]][bundlephobia-link]
+[![types-badge]][npm-link]
+[![license-badge]][license-link]
+
 A React hook that synchronizes state updates with `requestAnimationFrame` for optimal rendering performance.
+
+<!--links:start-->
+[npm-version-badge]: https://img.shields.io/npm/v/@use-raf/state.svg
+[npm-downloads-badge]: https://img.shields.io/npm/dm/@use-raf/state.svg
+[bundle-size-badge]: https://img.shields.io/bundlephobia/minzip/@use-raf/state
+[bundlephobia-link]: https://bundlephobia.com/package/@use-raf/state
+[types-badge]: https://img.shields.io/npm/types/@use-raf/state
+[npm-link]: https://www.npmjs.com/package/@use-raf/state
+[license-badge]: https://img.shields.io/npm/l/@use-raf/state.svg
+[license-link]: https://github.com/einouqo/use-raf/blob/main/LICENSE
+[codspeed-link]: https://codspeed.io/einouqo/use-raf
+<!--links:end-->
 
 ## Installation
 
@@ -136,7 +154,3 @@ pnpm run bench
 ```
 
 **Performance regression tracking:** benchmark results are continuously monitored via [CodSpeed][codspeed-link] to detect performance regressions.
-
-<!--links:start-->
-[codspeed-link]: https://codspeed.io/einouqo/use-raf
-<!--links:end-->
