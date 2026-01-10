@@ -81,7 +81,7 @@ gh pr create
 
 Git hooks (via Husky) will automatically:
 
-- **pre-commit** — Run linting and tests (`pnpm verify`)
+- **pre-commit** — Run linting and tests (`pnpm run verify`)
 - **commit-msg** — Validate conventional commit format
 
 <!--links:start-->

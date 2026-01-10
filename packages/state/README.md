@@ -60,7 +60,7 @@ const Demo = () => {
 **Note:** When multiple updater functions are called between frames (e.g., `setState(prev => prev + 1)` three times), `@use-raf/state` correctly chains them, resulting in `3`, while other implementations (`@shined/react-use`, `react-use`, `@reactuses/core`) only apply the last update, resulting in `1`. See [the trial test case](./src/state.test.ts#L367-L410):
 
 ```bash
-pnpm test:trial
+pnpm run test:trial
 ```
 
 Another example illustrating this behavior:
@@ -132,7 +132,7 @@ Benchmarked against similar hooks from popular libraries. While `react-use` lead
 **Running benchmarks:**
 
 ```bash
-pnpm bench
+pnpm run bench
 ```
 
 **Performance regression tracking:** benchmark results are continuously monitored via [CodSpeed][codspeed-link] to detect performance regressions.

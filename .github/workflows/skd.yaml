@@ -15,7 +15,7 @@ jobs:
         shell: devenv shell bash -- -e {0}
         run: |
           pnpm i --frozen-lockfile
-          pnpm --filter @use-raf/skd lint
+          pnpm --filter @use-raf/skd run lint
   test:
     runs-on: ubuntu-latest
     permissions:
@@ -30,4 +30,4 @@ jobs:
         shell: devenv shell bash -- -e {0}
         run: |
           pnpm i --frozen-lockfile
-          pnpm --filter @use-raf/skd test
+          pnpm --filter @use-raf/skd run test
