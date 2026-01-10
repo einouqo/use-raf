@@ -1,6 +1,6 @@
 {
   "name": "@use-raf/loop",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "React frame-synchronized loop hook",
   "type": "module",
   "main": "./src/index.ts",
@@ -19,7 +19,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "sideEffects": false,
   "keywords": [

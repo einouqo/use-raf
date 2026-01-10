@@ -1,9 +1,26 @@
 # @use-raf/skd
 
+[![npm-version-badge]][npm-link]
+[![npm-downloads-badge]][npm-link]
+[![bundle-size-badge]][bundlephobia-link]
+[![types-badge]][npm-link]
+[![license-badge]][license-link]
+
 > **skd** is short for **scheduler** and refers to scheduling utilities.\
 > Frame-synchronized replacement for `setTimeout` and `setInterval` window's methods
 
 Schedule callbacks to execute on the animation frame.
+
+<!--links:start-->
+[npm-version-badge]: https://img.shields.io/npm/v/@use-raf/skd.svg
+[npm-downloads-badge]: https://img.shields.io/npm/dm/@use-raf/skd.svg
+[bundle-size-badge]: https://img.shields.io/bundlephobia/minzip/@use-raf/skd
+[bundlephobia-link]: https://bundlephobia.com/package/@use-raf/skd
+[types-badge]: https://img.shields.io/npm/types/@use-raf/skd
+[npm-link]: https://www.npmjs.com/package/@use-raf/skd
+[license-badge]: https://img.shields.io/npm/l/@use-raf/skd.svg
+[license-link]: https://github.com/einouqo/use-raf/blob/main/LICENSE
+<!--links:end-->
 
 ## Installation
 

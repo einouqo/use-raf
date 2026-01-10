@@ -1,5 +1,16 @@
 # @use-raf/state
 
+## 1.0.0
+
+### Major Changes
+
+- First stable release
+
+### Patch Changes
+
+- Updated dependencies
+  - @use-raf/skd@1.0.0
+
 ## 0.0.3
 
 ### Patch Changes

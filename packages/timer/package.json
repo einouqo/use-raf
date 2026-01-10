@@ -1,6 +1,6 @@
 {
   "name": "@use-raf/timer",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "React frame-synchronized timer hook",
   "type": "module",
   "main": "./src/index.ts",

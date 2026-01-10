@@ -1,5 +1,11 @@
 # @use-raf/skd
 
+## 1.0.0
+
+### Major Changes
+
+- First stable release
+
 ## 0.0.3
 
 ### Patch Changes

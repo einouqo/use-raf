@@ -1,5 +1,17 @@
 # @use-raf/timer
 
+## 1.0.0
+
+### Major Changes
+
+- First stable release
+
+### Patch Changes
+
+- Updated dependencies
+  - @use-raf/loop@1.0.0
+  - @use-raf/skd@1.0.0
+
 ## 0.0.4
 
 ### Patch Changes

@@ -1,6 +1,24 @@
 # @use-raf/loop
 
+[![npm-version-badge]][npm-link]
+[![npm-downloads-badge]][npm-link]
+[![bundle-size-badge]][bundlephobia-link]
+[![types-badge]][npm-link]
+[![license-badge]][license-link]
+
 A React hook for creating controlled, frame-synchronized customizable `requestAnimationFrame` loops.
+
+<!--links:start-->
+[npm-version-badge]: https://img.shields.io/npm/v/@use-raf/loop.svg
+[npm-downloads-badge]: https://img.shields.io/npm/dm/@use-raf/loop.svg
+[bundle-size-badge]: https://img.shields.io/bundlephobia/minzip/@use-raf/loop
+[bundlephobia-link]: https://bundlephobia.com/package/@use-raf/loop
+[types-badge]: https://img.shields.io/npm/types/@use-raf/loop
+[npm-link]: https://www.npmjs.com/package/@use-raf/loop
+[license-badge]: https://img.shields.io/npm/l/@use-raf/loop.svg
+[license-link]: https://github.com/einouqo/use-raf/blob/main/LICENSE
+[codspeed-link]: https://codspeed.io/einouqo/use-raf
+<!--links:end-->
 
 ## Installation
 
@@ -95,7 +113,3 @@ pnpm run bench
 ```
 
 **Performance regression tracking:** benchmark results are continuously monitored via [CodSpeed][codspeed-link] to detect performance regressions.
-
-<!--links:start-->
-[codspeed-link]: https://codspeed.io/einouqo/use-raf
-<!--links:end-->

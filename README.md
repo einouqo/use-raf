@@ -19,7 +19,7 @@ A hook collection built over the [requestAnimationFrame window API][mdn-window-r
 [codecov-link]: https://codecov.io/github/einouqo/use-raf
 [codspeed-badge]: https://img.shields.io/endpoint?url=https://codspeed.io/badge.json
 [codspeed-link]: https://codspeed.io/einouqo/use-raf
-[license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[license-badge]: https://img.shields.io/npm/l/@use-raf/loop.svg
 [license-link]: https://github.com/einouqo/use-raf/blob/main/LICENSE
 [mdn-window-raf]: https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
 <!--links:end-->
