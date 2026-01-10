@@ -1,6 +1,6 @@
 {
   "name": "@use-raf/loop",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "React frame-synchronized loop hook",
   "type": "module",
   "main": "./src/index.ts",
@@ -38,8 +38,7 @@
     "test:watch": "vitest",
     "bench": "vitest bench --run --no-file-parallelism --sequence.shuffle",
     "bench:watch": "vitest bench --no-file-parallelism --sequence.shuffle",
-    "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism",
-    "publish": "bun publish --access public --tolerate-republish"
+    "bench:regress": "vitest bench --run -t '#regress' --no-file-parallelism"
   },
   "peerDependencies": {
     "react": ">=16.14"
