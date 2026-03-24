@@ -122,12 +122,12 @@ flowchart LR
     style DoubleCallback fill:#9B8CF5,stroke:#6C5CDC,stroke-width:3px,color:#fff
 ```
 
-| Package | Result |
-|---------|--------|
-| `@use-raf/state` | ✅ `3` |
-| `@shined/react-use` | ❌ `2` |
-| `react-use` | ❌ `2` |
-| `@reactuses/core` | ❌ `2` |
+| Package | Result | Fixed since |
+| ------- | ------ | ----------- |
+| `@use-raf/state` | ✅ `3` | ✅ v1.0.0 |
+| `@shined/react-use` | ⚠️ `2` | ✅ v1.14.0 |
+| `react-use` | ❌ `2` | ❌ *Not fixed* |
+| `@reactuses/core` | ⚠️ `2` | ✅ v6.1.9 |
 
 ## Performance
 
